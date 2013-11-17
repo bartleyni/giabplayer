@@ -1,0 +1,20 @@
+name = Bath-Eduroam
+author = Nick Bartley
+version = 1
+require bath_username *Bath_Username bath_password *Bath_Password ca_cert *Path_to_CA_Cert
+-----
+ctrl_interface=/var/run/wpa_supplicant
+network={
+        ssid="$_ESSID"
+        scan_ssid=$_SCAN
+        key_mgmt=WPA-EAP
+        proto=WPA RSN
+        pairwise=CCMP TKIP
+        group=CCMP TKIP
+        eap=TTLS
+        identity="$_BATH_USERNAME"
+        password="$_BATH_PASSWORD"
+        anonymous_identity="@bath.ac.uk"
+        ca_cert="$_CA_CERT"
+        phase2="auth=MSCHAPV2"
+}
