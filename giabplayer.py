@@ -21,12 +21,12 @@ from vlcclient import VLCClient
 Options = [\
 	("Stream", "URB", "http://people.bath.ac.uk/su9urb/audio/urb-hi.m3u"), \
 	("Stream", "JackFM", "http://stream1.radiomonitor.com/JackBristol-128.m3u"), \
-	("Folder", "Pop House Music", "/home/pi/PopHouse/"), \
-	("Folder", "ICIA House Music", "/home/pi/ICIAHouse/"), \
-	("File", "Applause", "/home/pi/cannedApplause.wav"), \
-	("File", "Ring Out", "/home/pi/MoneyForNothing.mp3"), \
-	("Sting", "Stings", "/home/pi/Stings/"), \
-	("Help", "Help", "/home/pi/Help.mp3"), \
+	("Folder", "Pop House Music", "PopHouse/"), \
+	("Folder", "ICIA House Music", "ICIAHouse/"), \
+	("File", "Applause", "cannedApplause.wav"), \
+	("File", "Ring Out", "MoneyForNothing.mp3"), \
+	("Sting", "Stings", "Stings/"), \
+	("Help", "Help", "Help.mp3"), \
 	("Folder", "USB Stick", "/media/usb/") \
 	]
 
