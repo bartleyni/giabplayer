@@ -309,16 +309,9 @@ def ShutdownButton(event):
 	DisplayLineOne = "Shutdown...".center(16)
 	time.sleep(3)
 	SHUTDOWN = subprocess.Popen(["sudo", "halt"])
-	DisplayLineTwo = "5".center(16)
-	time.sleep(1)
-	DisplayLineTwo = "4".center(16)
-	time.sleep(1)
-	DisplayLineTwo = "3".center(16)
-	time.sleep(1)
-	DisplayLineTwo = "2".center(16)
-	time.sleep(1)
-	DisplayLineTwo = "1".center(16)
-	time.sleep(1)
+	for i in range (10, 0, -1):
+		DisplayLineTwo = "5".center(i)
+		time.sleep(1)
 
 #Reboot Pi
 def RebootButton(event):
@@ -334,16 +327,9 @@ def RebootButton(event):
 	DisplayLineOne = "Rebooting...".center(16)
 	time.sleep(3)
 	REBOOT = subprocess.Popen(["sudo", "reboot"])
-	DisplayLineTwo = "5".center(16)
-	time.sleep(1)
-	DisplayLineTwo = "4".center(16)
-	time.sleep(1)
-	DisplayLineTwo = "3".center(16)
-	time.sleep(1)
-	DisplayLineTwo = "2".center(16)
-	time.sleep(1)
-	DisplayLineTwo = "1".center(16)
-	time.sleep(1)
+	for i in range (10, 0, -1):
+		DisplayLineTwo = "5".center(i)
+		time.sleep(1)
 	
 #System Initialization
 def Initialize():
