@@ -335,7 +335,7 @@ def ShutdownButton(event):
 	global SelectedMode
 	StatusFlag = False
 	
-	time.sleep(2)
+	time.sleep(1)
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
 	DisplayLineOne = "Shutdown...".center(16)
@@ -346,7 +346,7 @@ def ShutdownButton(event):
 			VLC.connect()
 			VLC.stop()
 			VLC.disconnect()
-			time.sleep(1)
+			time.sleep(2)
 			DISPLAY.lcd.clear()
 			DISPLAY.lcd.home()
 			DisplayLineOne = "Shutdown...".center(16)
@@ -365,10 +365,8 @@ def ShutdownButton(event):
 def RebootButton(event):
 	global DisplayLineOne
 	global DisplayLineTwo
-	VLC = VLCClient("127.0.0.1",4212,"admin",1)
-	VLC.connect()
-	VLC.stop()
-	VLC.disconnect()
+	StatusFlag = False
+	
 	time.sleep(1)
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
@@ -376,10 +374,14 @@ def RebootButton(event):
 	DisplayLineTwo = "Press again...".center(16)
 	while True:
 		if DISPLAY.switches[3].value == 1:
+			VLC = VLCClient("127.0.0.1",4212,"admin",1)
+			VLC.connect()
+			VLC.stop()
+			VLC.disconnect()
+			time.sleep(2)
 			DISPLAY.lcd.clear()
 			DISPLAY.lcd.home()
 			DisplayLineOne = "Rebooting...".center(16)
-			time.sleep(3)
 			SHUTDOWN = subprocess.Popen(["sudo", "reboot"])
 			for i in range (10, 0, -1):
 				DisplayLineTwo = str(i).center(16)
