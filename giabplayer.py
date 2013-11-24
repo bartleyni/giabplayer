@@ -400,7 +400,9 @@ def Initialize():
 	WLANOn = subprocess.Popen(["sudo", "ifconfig", "wlan0", "up"])
 	
 	#PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet"])
-	PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}"])
+	#PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}"])
+	PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}", "--sout", "'#std{access=udp,mux=ts,dst=:1234}'"])
+	
 	
 	DISPLAY.lcd.backlight_on()
 	DISPLAY.lcd.blink_off()
