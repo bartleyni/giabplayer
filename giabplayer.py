@@ -70,6 +70,10 @@ def CheckInternet(Delay):
 
 		if Internet == False and LastInternet == True:
 			print "Internet Disconnected"
+			WLANOff = subprocess.Popen(["sudo", "ifconfig", "wlan0", "down"])
+			ETHOff = subprocess.Popen(["sudo", "ifconfig", "eth0", "down"])
+			WLANOn = subprocess.Popen(["sudo", "ifconfig", "wlan0", "up"])
+			ETHOn = subprocess.Popen(["sudo", "ifconfig", "eth0", "up"])
 		
 		LastInternet = Internet
 		time.sleep(Delay)
