@@ -402,7 +402,7 @@ def Initialize():
 	
 	#PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet"])
 	#PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}"])
-	PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}", "--sout", re.escape("'#std{access=http,mux=ts,dst=:1234}'")])
+	PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}", "--sout", "'#std{access=http,mux=ts,dst=192.168.0.5:1234}'"])
 	
 	
 	DISPLAY.lcd.backlight_on()
