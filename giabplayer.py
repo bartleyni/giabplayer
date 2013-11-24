@@ -503,7 +503,7 @@ class NetworkThread (threading.Thread):
         self.name = name
     def run(self):
         print "Starting " + self.name
-        CheckInternet(5)
+        CheckInternet(10)
         print "Exiting " + self.name
 		
 # Create new threads
