@@ -394,6 +394,9 @@ def RebootButton(event):
 #System Initialization
 def Initialize():
 	
+	WLANOff = subprocess.Popen(["sudo", "ifconfig", "wlan0", "down"])
+	WLANOn = subprocess.Popen(["sudo", "ifconfig", "wlan0", "up"])
+	
 	#PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet"])
 	PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}"])
 	
