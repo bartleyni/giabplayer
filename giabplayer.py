@@ -313,6 +313,7 @@ def NetResetButton(event):
 	VLC.connect()
 	VLC.stop()
 	VLC.disconnect()
+	time.sleep(1)
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
 	DisplayLineOne = "Network Reset".center(16)
@@ -327,15 +328,25 @@ def ShutdownButton(event):
 	VLC.connect()
 	VLC.stop()
 	VLC.disconnect()
-	time.sleep(1)
+	time.sleep(2)
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
 	DisplayLineOne = "Shutdown...".center(16)
-	time.sleep(3)
-	SHUTDOWN = subprocess.Popen(["sudo", "halt"])
-	for i in range (10, 0, -1):
-		DisplayLineTwo = str(i).center(16)
-		time.sleep(1)
+	DisplayLineTwo = "Press again...".center(16)
+	while True:
+		if DISPLAY.switches[2].value == 1:
+			DISPLAY.lcd.clear()
+			DISPLAY.lcd.home()
+			DisplayLineOne = "Shutdown...".center(16)
+			time.sleep(3)
+			SHUTDOWN = subprocess.Popen(["sudo", "halt"])
+			for i in range (10, 0, -1):
+				DisplayLineTwo = str(i).center(16)
+				time.sleep(1)
+		if DISPLAY.switches[4].value == 1:
+			StatusFlag = False
+			ModeSelector(SelectedMode)
+			return
 
 #Reboot Pi
 def RebootButton(event):
@@ -349,11 +360,21 @@ def RebootButton(event):
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
 	DisplayLineOne = "Rebooting...".center(16)
-	time.sleep(3)
-	REBOOT = subprocess.Popen(["sudo", "reboot"])
-	for i in range (10, 0, -1):
-		DisplayLineTwo = str(i).center(16)
-		time.sleep(1)
+	DisplayLineTwo = "Press again...".center(16)
+	while True:
+		if DISPLAY.switches[3].value == 1:
+			DISPLAY.lcd.clear()
+			DISPLAY.lcd.home()
+			DisplayLineOne = "Rebooting...".center(16)
+			time.sleep(3)
+			SHUTDOWN = subprocess.Popen(["sudo", "reboot"])
+			for i in range (10, 0, -1):
+				DisplayLineTwo = str(i).center(16)
+				time.sleep(1)
+		if DISPLAY.switches[4].value == 1:
+			StatusFlag = False
+			ModeSelector(SelectedMode)
+			return
 	
 #System Initialization
 def Initialize():
