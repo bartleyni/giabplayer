@@ -45,6 +45,7 @@ LastSting = 0
 SelectedMode = 0
 DISPLAY = pifacecad.PiFaceCAD()
 PLAYER_LOCK = threading.Lock()
+Internet = False
 
 #Checks to see if there is an internet connection
 def InternetOn():
@@ -54,6 +55,25 @@ def InternetOn():
     except urllib2.URLError as err: pass
     return False
 
+#Polls for network connection and will persistantly try to connect to wifi
+def CheckInternet(Delay):
+	global Internet
+	LastInternet = 0
+	ExitFlag = False
+	
+	while True:
+		if ExitFlag:
+			thread.exit()
+		Internet = InternetOn()
+		if Internet == True and LastInternet == False:
+			print "Internet Connected"
+
+		if Internet == False and LastInternet == True:
+			print "Internet Disconnected"
+		
+		LastInternet = Internet
+		time.sleep(Delay)
+	
 #Controls the LCD display
 def DisplayUpdate():
 	
@@ -427,13 +447,28 @@ class PlayerThread (threading.Thread):
         print "Starting " + self.name
         PlayerOperation()
         print "Exiting " + self.name
+
+#Thread for Network Connection
+class NetworkThread (threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+    def run(self):
+        print "Starting " + self.name
+        CheckInternet(5)
+        print "Exiting " + self.name
 		
 # Create new threads
 thread1 = ControlThread(1, "Control Thread")
 thread2 = DisplayThread(2, "Display Thread")
 thread3 = PlayerThread(3, "Player Thread")
+thread4 = NetworkThread(3, "Network Connection Thread")
+
 
 # Start Threads
+thread4.start()
+time.sleep(2)
 thread1.start()
 time.sleep(8)
 thread2.start()
