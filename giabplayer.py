@@ -65,9 +65,9 @@ def CheckInternet(Delay):
 	while True:
 		if ExitFlag:
 			thread.exit()
-		PLAYER_LOCK.acquire()
+		#PLAYER_LOCK.acquire()
 		Internet = InternetOn()
-		PLAYER_LOCK.release()
+		#PLAYER_LOCK.release()
 		if Internet == True and LastInternet == False:
 			print "Internet Connected"
 
