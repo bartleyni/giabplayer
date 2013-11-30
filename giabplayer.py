@@ -32,8 +32,8 @@ Options = [\
 	]
 
 #Display Control Variables
-DisplayLineOne = None
-DisplayLineTwo = None
+DisplayLineOne = " "
+DisplayLineTwo = " "
 
 #Player Control Variables
 PlayerControl = None
@@ -84,13 +84,8 @@ def CheckInternet(Delay):
 #Controls the LCD display
 def DisplayUpdate():
 	
-	global DisplayLineOne
-	global DisplayLineTwo	
-	
-	DisplayLineOne = " "
-	DisplayLineTwo = " "
-	LastDisplayLineOne = None
-	LastDisplayLineTwo = None
+	LastDisplayLineOne = " "
+	LastDisplayLineTwo = " "
 	
 	while True:
 		PLAYER_LOCK.acquire()
@@ -282,8 +277,8 @@ def LoadPlayer():
 	
 #Play Button
 def PlayButton(event):
+	
 	global StatusFlag
-	global SelectedMode
 	
 	StatusFlag = True
 	VLC = VLCClient("127.0.0.1",4212,"admin",1)
@@ -298,9 +293,6 @@ def PlayButton(event):
 #Stop Button
 def StopButton(event):
 	
-	global SelectedMode
-	global StatusFlag
-	
 	if Options[SelectedMode][0] == "Sting":
 		LoadPlayer()
 	VLC = VLCClient("127.0.0.1",4212,"admin",1)
@@ -310,7 +302,7 @@ def StopButton(event):
 
 #Mode Button
 def ModeButton(event):
-	global SelectedMode
+
 	global StatusFlag
 	
 	StatusFlag = False
@@ -318,8 +310,10 @@ def ModeButton(event):
 
 #Reset Network
 def NetResetButton(event):
+	
 	global DisplayLineOne
 	global DisplayLineTwo
+	
 	VLC = VLCClient("127.0.0.1",4212,"admin",1)
 	VLC.connect()
 	VLC.stop()
@@ -333,6 +327,7 @@ def NetResetButton(event):
 
 #Shutdown Pi
 def ShutdownButton(event):
+	
 	global DisplayLineOne
 	global DisplayLineTwo
 	global SelectedMode
@@ -372,6 +367,7 @@ def ShutdownButton(event):
 
 #Reboot Pi
 def RebootButton(event):
+	
 	global DisplayLineOne
 	global DisplayLineTwo
 	global StatusFlag
@@ -424,8 +420,8 @@ def Initialize():
 	DISPLAY.lcd.blink_off()
 	DISPLAY.lcd.cursor_off()
 	
-	#CONNECTED = pifacecad.LCDBitmap([0b01110, 0b10001, 0b00000, 0b00100, 0b01010, 0b00000, 0b00100, 0b00000])
-	#DISPLAY.lcd.store_custom_bitmap(0, CONNECTED)
+	CONNECTED = pifacecad.LCDBitmap([0b01110, 0b10001, 0b00000, 0b00100, 0b01010, 0b00000, 0b00100, 0b00000])
+	DISPLAY.lcd.store_custom_bitmap(0, CONNECTED)
 	
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
@@ -450,7 +446,7 @@ def Initialize():
 	if InternetOn():
 		DISPLAY.lcd.write("Connected")
 		DISPLAY.lcd.set_cursor(15, 1)
-		#DISPLAY.lcd.write_custom_bitmap(0)
+		DISPLAY.lcd.write_custom_bitmap(0)
 	else:
 		DISPLAY.lcd.write("Disconnected")
 	
