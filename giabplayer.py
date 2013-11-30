@@ -522,7 +522,7 @@ class NetworkThread (threading.Thread):
 thread1 = ControlThread(1, "Control Thread")
 thread2 = DisplayThread(2, "Display Thread")
 thread3 = PlayerThread(3, "Player Thread")
-thread4 = NetworkThread(3, "Network Connection Thread")
+thread4 = NetworkThread(4, "Network Connection Thread")
 
 
 # Start Threads
