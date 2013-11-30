@@ -65,7 +65,9 @@ def CheckInternet(Delay):
 	while True:
 		if ExitFlag:
 			thread.exit()
+		PLAYER_LOCK.acquire()
 		Internet = InternetOn()
+		PLAYER_LOCK.release()
 		if Internet == True and LastInternet == False:
 			print "Internet Connected"
 
@@ -334,7 +336,11 @@ def ShutdownButton(event):
 	global DisplayLineOne
 	global DisplayLineTwo
 	global SelectedMode
+	global StatusFlag
+	
+	PLAYER_LOCK.acquire()
 	StatusFlag = False
+	PLAYER_LOCK.release()
 	
 	time.sleep(1)
 	DISPLAY.lcd.clear()
@@ -358,15 +364,22 @@ def ShutdownButton(event):
 		if DISPLAY.switches[4].value == 1:
 			DISPLAY.lcd.clear()
 			DISPLAY.lcd.home()
+			PLAYER_LOCK.acquire()
 			DisplayLineOne = Options[SelectedMode][1]
 			StatusFlag = True
+			PLAYER_LOCK.release()
 			return
 
 #Reboot Pi
 def RebootButton(event):
 	global DisplayLineOne
 	global DisplayLineTwo
+	global StatusFlag
+	global SelectedMode
+	
+	PLAYER_LOCK.acquire()
 	StatusFlag = False
+	PLAYER_LOCK.release()
 	
 	time.sleep(1)
 	DISPLAY.lcd.clear()
@@ -390,8 +403,10 @@ def RebootButton(event):
 		if DISPLAY.switches[4].value == 1:
 			DISPLAY.lcd.clear()
 			DISPLAY.lcd.home()
+			PLAYER_LOCK.acquire()
 			DisplayLineOne = Options[SelectedMode][1]
 			StatusFlag = True
+			PLAYER_LOCK.release()
 			return
 	
 #System Initialization
