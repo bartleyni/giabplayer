@@ -424,8 +424,8 @@ def Initialize():
 	DISPLAY.lcd.blink_off()
 	DISPLAY.lcd.cursor_off()
 	
-	CONNECTED = pifacecad.LCDBitmap([0b01110, 0b10001, 0b00000, 0b00100, 0b01010, 0b00000, 0b00100, 0b00000])
-	DISPLAY.lcd.store_custom_bitmap(0, CONNECTED)
+	#CONNECTED = pifacecad.LCDBitmap([0b01110, 0b10001, 0b00000, 0b00100, 0b01010, 0b00000, 0b00100, 0b00000])
+	#DISPLAY.lcd.store_custom_bitmap(0, CONNECTED)
 	
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
@@ -450,7 +450,7 @@ def Initialize():
 	if InternetOn():
 		DISPLAY.lcd.write("Connected")
 		DISPLAY.lcd.set_cursor(15, 1)
-		DISPLAY.lcd.write_custom_bitmap(0)
+		#DISPLAY.lcd.write_custom_bitmap(0)
 	else:
 		DISPLAY.lcd.write("Disconnected")
 	
