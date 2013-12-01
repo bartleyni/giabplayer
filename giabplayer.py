@@ -8,6 +8,7 @@ import pifacecad
 import re
 from pifacecad.tools.question import LCDQuestion
 from vlcclient import VLCClient
+from pifacecad.lcd import LCD_WIDTH
 
 ### Threaded Player GIAB Micro Player ###
 ### Nick Bartley 2013 ###
@@ -133,10 +134,10 @@ def PlayerOperation():
 		#PLAYER_LOCK.release()
 		
 		if StatusFlag == True:
-			DisplayLineTwo = PlayerStatus.center(16)
+			DisplayLineTwo = PlayerStatus.center(LCD_WIDTH-1)
 			time.sleep(1.5)
 			if PlayerState <> "0":
-				DisplayLineTwo = PlayingTitle.center(16)
+				DisplayLineTwo = PlayingTitle.center(LCD_WIDTH-1)
 			time.sleep(1)
 			
 		if PlayerState == "0":
@@ -157,7 +158,7 @@ def ModeSelector(CurrentMode):
 	LastModeOption = len(Options)-1
 	
 	DisplayLineOne = "Mode:"
-	DisplayLineTwo = Options[HighlightedMode][1].center(16)
+	DisplayLineTwo = Options[HighlightedMode][1].center(LCD_WIDTH-1)
 	
 	SelectorMode = True
 	
@@ -167,14 +168,14 @@ def ModeSelector(CurrentMode):
 			HighlightedMode = HighlightedMode + 1
 			if HighlightedMode > LastModeOption:
 				HighlightedMode = 0
-			DisplayLineTwo = Options[HighlightedMode][1].center(16)
+			DisplayLineTwo = Options[HighlightedMode][1].center(LCD_WIDTH-1)
 			time.sleep(0.3)
 			
 		if DISPLAY.switches[6].value == 1:
 			HighlightedMode = HighlightedMode - 1
 			if HighlightedMode < 0:
 				HighlightedMode = LastModeOption
-			DisplayLineTwo = Options[HighlightedMode][1].center(16)
+			DisplayLineTwo = Options[HighlightedMode][1].center(LCD_WIDTH-1)
 			time.sleep(0.3)
 		
 		if DISPLAY.switches[5].value == 1:
@@ -340,8 +341,8 @@ def ShutdownButton(event):
 	time.sleep(1)
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
-	DisplayLineOne = "Shutdown...".center(16)
-	DisplayLineTwo = "Press again...".center(16)
+	DisplayLineOne = "Shutdown...".center(LCD_WIDTH-1)
+	DisplayLineTwo = "Press again...".center(LCD_WIDTH-1)
 	while True:
 		if DISPLAY.switches[2].value == 1:
 			VLC = VLCClient("127.0.0.1",4212,"admin",1)
@@ -351,10 +352,10 @@ def ShutdownButton(event):
 			time.sleep(2)
 			DISPLAY.lcd.clear()
 			DISPLAY.lcd.home()
-			DisplayLineOne = "Shutdown...".center(16)
+			DisplayLineOne = "Shutdown...".center(LCD_WIDTH-1)
 			SHUTDOWN = subprocess.Popen(["sudo", "halt"])
 			for i in range (10, 0, -1):
-				DisplayLineTwo = str(i).center(16)
+				DisplayLineTwo = str(i).center(LCD_WIDTH-1)
 				time.sleep(1)
 		if DISPLAY.switches[4].value == 1:
 			DISPLAY.lcd.clear()
@@ -380,8 +381,8 @@ def RebootButton(event):
 	time.sleep(1)
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
-	DisplayLineOne = "Rebooting...".center(16)
-	DisplayLineTwo = "Press again...".center(16)
+	DisplayLineOne = "Rebooting...".center(LCD_WIDTH-1)
+	DisplayLineTwo = "Press again...".center(LCD_WIDTH-1)
 	while True:
 		if DISPLAY.switches[3].value == 1:
 			VLC = VLCClient("127.0.0.1",4212,"admin",1)
@@ -391,10 +392,10 @@ def RebootButton(event):
 			time.sleep(2)
 			DISPLAY.lcd.clear()
 			DISPLAY.lcd.home()
-			DisplayLineOne = "Rebooting...".center(16)
+			DisplayLineOne = "Rebooting...".center(LCD_WIDTH-1)
 			SHUTDOWN = subprocess.Popen(["sudo", "reboot"])
 			for i in range (10, 0, -1):
-				DisplayLineTwo = str(i).center(16)
+				DisplayLineTwo = str(i).center(LCD_WIDTH-1)
 				time.sleep(1)
 		if DISPLAY.switches[4].value == 1:
 			DISPLAY.lcd.clear()
