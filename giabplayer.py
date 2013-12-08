@@ -154,7 +154,7 @@ def ModeSelector(CurrentMode):
 	global DisplayLineOne
 	global DisplayLineTwo
 	global SelectedMode
-	global LISTENER
+	#global LISTENER
 	
 	LISTENER.deactivate()
 	
@@ -321,7 +321,7 @@ def NetResetButton(event):
 	
 	global DisplayLineOne
 	global DisplayLineTwo
-	global LISTENER
+	#global LISTENER
 	
 	LISTENER.deactivate()
 	VLC = VLCClient("127.0.0.1",4212,"admin",1)
@@ -342,7 +342,7 @@ def ShutdownButton(event):
 	global DisplayLineTwo
 	global SelectedMode
 	global StatusFlag
-	global LISTENER
+	#global LISTENER
 	
 	LISTENER.deactivate()
 	PLAYER_LOCK.acquire()
@@ -384,7 +384,7 @@ def RebootButton(event):
 	global DisplayLineTwo
 	global StatusFlag
 	global SelectedMode
-	global LISTENER
+	#global LISTENER
 	
 	PLAYER_LOCK.acquire()
 	StatusFlag = False
@@ -421,7 +421,7 @@ def RebootButton(event):
 	
 #System Initialization
 def Initialize():
-	global LISTENER
+	#global LISTENER
 	
 	WLANOff = subprocess.Popen(["sudo", "ifconfig", "wlan0", "down"])
 	WLANOn = subprocess.Popen(["sudo", "ifconfig", "wlan0", "up"])
