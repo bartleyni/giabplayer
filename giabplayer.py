@@ -92,10 +92,10 @@ def DisplayUpdate():
 	
 	while True:
 		PLAYER_LOCK.acquire()
-		if DisplayRefreshCounter == 50:
-			DISPLAY.clear()
-			DISPLAY.home()
-			DisplayRefreshCounter = 0
+		#if DisplayRefreshCounter == 50:
+		#	DISPLAY.clear()
+		#	DISPLAY.home()
+		#	DisplayRefreshCounter = 0
 		if DisplayLineOne <> LastDisplayLineOne:
 			DISPLAY.lcd.set_cursor(0, 0)
 			LineOne = DisplayLineOne[0:16]
@@ -107,7 +107,7 @@ def DisplayUpdate():
 			DISPLAY.lcd.write(LineTwo.ljust(16))
 			LastDisplayLineTwo = DisplayLineTwo
 		PLAYER_LOCK.release()
-		DisplayRefreshCounter=DisplayRefreshCounter+1
+		#DisplayRefreshCounter = DisplayRefreshCounter+1
 		time.sleep(0.01)
 
 #Controls VLC Player
@@ -329,7 +329,7 @@ def NetResetButton(event):
 	global DisplayLineTwo
 	#global LISTENER
 	
-	LISTENER.deactivate()
+	#LISTENER.deactivate()
 	VLC = VLCClient("127.0.0.1",4212,"admin",1)
 	VLC.connect()
 	VLC.stop()
