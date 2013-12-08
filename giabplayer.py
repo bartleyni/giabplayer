@@ -356,9 +356,7 @@ def ShutdownButton(event):
 	global DisplayLineTwo
 	global SelectedMode
 	global StatusFlag
-	#global LISTENER
-	
-	LISTENER.deactivate()
+
 	PLAYER_LOCK.acquire()
 	StatusFlag = False
 	PLAYER_LOCK.release()
@@ -366,8 +364,12 @@ def ShutdownButton(event):
 	time.sleep(1)
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
+	PLAYER_LOCK.acquire()
 	DisplayLineOne = "Shutdown...".center(LCD_WIDTH-1)
 	DisplayLineTwo = "Press again...".center(LCD_WIDTH-1)
+	PLAYER_LOCK.release()
+	
+	
 	while True:
 		if DISPLAY.switches[2].value == 1:
 			VLC = VLCClient("127.0.0.1",4212,"admin",1)
@@ -398,18 +400,18 @@ def RebootButton(event):
 	global DisplayLineTwo
 	global StatusFlag
 	global SelectedMode
-	#global LISTENER
 	
 	PLAYER_LOCK.acquire()
 	StatusFlag = False
 	PLAYER_LOCK.release()
-	LISTENER.deactivate()
 	
 	time.sleep(1)
 	DISPLAY.lcd.clear()
 	DISPLAY.lcd.home()
+	PLAYER_LOCK.acquire()
 	DisplayLineOne = "Rebooting...".center(LCD_WIDTH-1)
 	DisplayLineTwo = "Press again...".center(LCD_WIDTH-1)
+	PLAYER_LOCK.release()
 	while True:
 		if DISPLAY.switches[3].value == 1:
 			VLC = VLCClient("127.0.0.1",4212,"admin",1)
