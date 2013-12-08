@@ -46,6 +46,7 @@ StatusFlag = False
 LastSting = 0
 SelectedMode = 0
 DISPLAY = pifacecad.PiFaceCAD()
+LISTENER = pifacecad.SwitchEventListener(chip=DISPLAY)
 PLAYER_LOCK = threading.Lock()
 Internet = False
 
@@ -153,7 +154,10 @@ def ModeSelector(CurrentMode):
 	global DisplayLineOne
 	global DisplayLineTwo
 	global SelectedMode
-
+	global LISTENER
+	
+	LISTENER.deactivate()
+	
 	HighlightedMode = CurrentMode
 	LastModeOption = len(Options)-1
 	
@@ -186,6 +190,7 @@ def ModeSelector(CurrentMode):
 			DisplayLineTwo = " "
 			PLAYER_LOCK.release()
 			LoadPlayer()
+			LISTENER.activate()
 			return SelectedMode
 			SelectorMode = False
 		
@@ -206,6 +211,7 @@ def ModeSelector(CurrentMode):
 			VLC.play()
 			VLC.disconnect()
 			StatusFlag = True
+			LISTENER.activate()
 			return SelectedMode
 			SelectorMode = False
 			
@@ -214,6 +220,7 @@ def ModeSelector(CurrentMode):
 			DISPLAY.lcd.home()
 			DisplayLineOne = Options[SelectedMode][1]
 			StatusFlag = True
+			LISTENER.activate()
 			SelectorMode = False
 			return
 
@@ -314,7 +321,9 @@ def NetResetButton(event):
 	
 	global DisplayLineOne
 	global DisplayLineTwo
+	global LISTENER
 	
+	LISTENER.deactivate()
 	VLC = VLCClient("127.0.0.1",4212,"admin",1)
 	VLC.connect()
 	VLC.stop()
@@ -333,7 +342,9 @@ def ShutdownButton(event):
 	global DisplayLineTwo
 	global SelectedMode
 	global StatusFlag
+	global LISTENER
 	
+	LISTENER.deactivate()
 	PLAYER_LOCK.acquire()
 	StatusFlag = False
 	PLAYER_LOCK.release()
@@ -373,10 +384,12 @@ def RebootButton(event):
 	global DisplayLineTwo
 	global StatusFlag
 	global SelectedMode
+	global LISTENER
 	
 	PLAYER_LOCK.acquire()
 	StatusFlag = False
 	PLAYER_LOCK.release()
+	LISTENER.deactivate()
 	
 	time.sleep(1)
 	DISPLAY.lcd.clear()
@@ -408,6 +421,7 @@ def RebootButton(event):
 	
 #System Initialization
 def Initialize():
+	global LISTENER
 	
 	WLANOff = subprocess.Popen(["sudo", "ifconfig", "wlan0", "down"])
 	WLANOn = subprocess.Popen(["sudo", "ifconfig", "wlan0", "up"])
@@ -454,7 +468,6 @@ def Initialize():
 	time.sleep(2.5)
 	
 	DISPLAY.lcd.clear()
-	LISTENER = pifacecad.SwitchEventListener(chip=DISPLAY)
 	LISTENER.register(0, pifacecad.IODIR_FALLING_EDGE, PlayButton)
 	LISTENER.register(1, pifacecad.IODIR_FALLING_EDGE, StopButton)
 	LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, ShutdownButton)
