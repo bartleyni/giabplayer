@@ -88,9 +88,13 @@ def DisplayUpdate():
 	
 	LastDisplayLineOne = " "
 	LastDisplayLineTwo = " "
+	DisplayRefreshCounter = 0
 	
 	while True:
 		PLAYER_LOCK.acquire()
+		if DisplayRefreshCounter == 50:
+			DISPLAY.clear()
+			DISPLAY.home()
 		if DisplayLineOne <> LastDisplayLineOne:
 			DISPLAY.lcd.set_cursor(0, 0)
 			LineOne = DisplayLineOne[0:16]
@@ -102,7 +106,7 @@ def DisplayUpdate():
 			DISPLAY.lcd.write(LineTwo.ljust(16))
 			LastDisplayLineTwo = DisplayLineTwo
 		PLAYER_LOCK.release()
-		
+		DisplayRefreshCounter++
 		time.sleep(0.01)
 
 #Controls VLC Player
@@ -154,9 +158,8 @@ def ModeSelector(CurrentMode):
 	global DisplayLineOne
 	global DisplayLineTwo
 	global SelectedMode
-	#global LISTENER
 	
-	LISTENER.deactivate()
+	#LISTENER.deactivate()
 	
 	HighlightedMode = CurrentMode
 	LastModeOption = len(Options)-1
