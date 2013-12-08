@@ -165,8 +165,10 @@ def ModeSelector(CurrentMode):
 	HighlightedMode = CurrentMode
 	LastModeOption = len(Options)-1
 	
+	PLAYER_LOCK.acquire()
 	DisplayLineOne = "Mode:"
 	DisplayLineTwo = Options[HighlightedMode][1].center(LCD_WIDTH-1)
+	PLAYER_LOCK.release()
 	
 	SelectorMode = True
 	
@@ -176,14 +178,18 @@ def ModeSelector(CurrentMode):
 			HighlightedMode = HighlightedMode + 1
 			if HighlightedMode > LastModeOption:
 				HighlightedMode = 0
+			PLAYER_LOCK.acquire()
 			DisplayLineTwo = Options[HighlightedMode][1].center(LCD_WIDTH-1)
+			PLAYER_LOCK.release()
 			time.sleep(0.3)
 			
 		if DISPLAY.switches[6].value == 1:
 			HighlightedMode = HighlightedMode - 1
 			if HighlightedMode < 0:
 				HighlightedMode = LastModeOption
+			PLAYER_LOCK.acquire()
 			DisplayLineTwo = Options[HighlightedMode][1].center(LCD_WIDTH-1)
+			PLAYER_LOCK.release()
 			time.sleep(0.3)
 		
 		if DISPLAY.switches[5].value == 1:
@@ -193,7 +199,7 @@ def ModeSelector(CurrentMode):
 			OptionName = Options[SelectedMode][1]
 			DisplayLineTwo = " "
 			PLAYER_LOCK.release()
-			LISTENER.activate()
+			#LISTENER.activate()
 			LoadPlayer()
 			return SelectedMode
 			SelectorMode = False
@@ -215,7 +221,7 @@ def ModeSelector(CurrentMode):
 			VLC.play()
 			VLC.disconnect()
 			StatusFlag = True
-			LISTENER.activate()
+			#LISTENER.activate()
 			return SelectedMode
 			SelectorMode = False
 			
@@ -224,7 +230,7 @@ def ModeSelector(CurrentMode):
 			DISPLAY.lcd.home()
 			DisplayLineOne = Options[SelectedMode][1]
 			StatusFlag = True
-			LISTENER.activate()
+			#LISTENER.activate()
 			SelectorMode = False
 			return
 
@@ -286,7 +292,7 @@ def LoadPlayer():
 		VLC.randomoff()
 	
 	VLC.disconnect()
-	LISTENER.activate()
+	#LISTENER.activate()
 	return
 	
 #Play Button
