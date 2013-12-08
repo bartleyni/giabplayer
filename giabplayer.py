@@ -189,8 +189,8 @@ def ModeSelector(CurrentMode):
 			OptionName = Options[SelectedMode][1]
 			DisplayLineTwo = " "
 			PLAYER_LOCK.release()
-			LoadPlayer()
 			LISTENER.activate()
+			LoadPlayer()
 			return SelectedMode
 			SelectorMode = False
 		
@@ -282,6 +282,8 @@ def LoadPlayer():
 		VLC.randomoff()
 	
 	VLC.disconnect()
+	LISTENER.activate()
+	return
 	
 #Play Button
 def PlayButton(event):
