@@ -92,7 +92,7 @@ def DisplayUpdate():
 	
 	while True:
 		PLAYER_LOCK.acquire()
-		if DisplayRefreshCounter == 100:
+		if DisplayRefreshCounter == 1000:
 			DISPLAY.clear()
 			DISPLAY.home()
 			DisplayRefreshCounter = 0
@@ -101,13 +101,15 @@ def DisplayUpdate():
 			LineOne = DisplayLineOne[0:16]
 			DISPLAY.lcd.write(LineOne.ljust(16))
 			LastDisplayLineOne = DisplayLineOne
+			DisplayRefreshCounter = DisplayRefreshCounter+1
 		if DisplayLineTwo <> LastDisplayLineTwo :
 			DISPLAY.lcd.set_cursor(0, 1)
 			LineTwo = DisplayLineTwo[0:16]
 			DISPLAY.lcd.write(LineTwo.ljust(16))
 			LastDisplayLineTwo = DisplayLineTwo
+			DisplayRefreshCounter = DisplayRefreshCounter+1
 		PLAYER_LOCK.release()
-		DisplayRefreshCounter = DisplayRefreshCounter+1
+		
 		time.sleep(0.01)
 
 #Controls VLC Player
