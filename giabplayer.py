@@ -254,6 +254,8 @@ if __name__ == "__main__":
 	player = Player(cad, vlc)
 	display = Display(cad, vlc)
 	
+	LISTENER = pifacecad.SwitchEventListener(chip=cad)
+	
 	LISTENER.register(0, pifacecad.IODIR_FALLING_EDGE, play_button)
 	LISTENER.register(1, pifacecad.IODIR_FALLING_EDGE, stop_button)
 	#LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, shutdown_button)
