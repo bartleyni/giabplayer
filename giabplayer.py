@@ -116,9 +116,10 @@ class Player(object):
 	
 	def load_player(self):
 		
-		option_type = OPTIONS[self.current_option_index][0]
-		option_name = OPTIONS[self.current_option_index][1]
-		option_address = OPTIONS[self.current_option_index][2]
+		current_index = self.current_option_index
+		option_type = OPTIONS[current_index][0]
+		option_name = OPTIONS[current_index][1]
+		option_address = OPTIONS[current_index[2]
 
 		self.VLC.connect()
 
