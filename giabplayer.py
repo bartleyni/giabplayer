@@ -119,7 +119,7 @@ class Player(object):
 		current_index = self.current_option_index
 		option_type = OPTIONS[current_index][0]
 		option_name = OPTIONS[current_index][1]
-		option_address = OPTIONS[current_index[2]
+		option_address = OPTIONS[current_index][2]
 
 		self.VLC.connect()
 
