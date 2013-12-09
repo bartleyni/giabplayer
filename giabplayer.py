@@ -266,5 +266,5 @@ if __name__ == "__main__":
 	#LISTENER.register(7, pifacecad.IODIR_FALLING_EDGE, right_button)
 	LISTENER.activate()
 	
-	display.update_display_line_one = "Mode:"
-	display.update_display_line_two = player.current_option()
+	display.update_display_line_one("Mode:")
+	display.update_display_line_two(player.current_option())
