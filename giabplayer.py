@@ -10,7 +10,7 @@ import pifacecad
 import re
 import pifacecommon
 from pifacecad.tools.question import LCDQuestion
-from self.VLCclient import self.VLCClient
+from VLCclient import VLCClient
 from pifacecad.lcd import LCD_WIDTH
 
 ### Threaded Player GIAB Micro Player ###
