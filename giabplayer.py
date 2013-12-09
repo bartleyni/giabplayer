@@ -178,7 +178,7 @@ class Display(object):
 		if line_one <> self.last_line_one:
 			self.CAD.lcd.set_cursor(0, 0)
 			line_one = line_one[0:LCD_WIDTH]
-			self.CAD.lcd.write(line_two.ljust(LCD_WIDTH))
+			self.CAD.lcd.write(line_one.ljust(LCD_WIDTH))
 			self.last_line_one = line_one
 
 	def update_display_line_two(self, line_two):
