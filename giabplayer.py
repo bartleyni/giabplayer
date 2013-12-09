@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import time
 import subprocess
 import urllib2
@@ -6,21 +8,18 @@ import glob
 import threading
 import pifacecad
 import re
+import pifacecommon
 from pifacecad.tools.question import LCDQuestion
-from vlcclient import VLCClient
+from self.VLCclient import self.VLCClient
 from pifacecad.lcd import LCD_WIDTH
 
 ### Threaded Player GIAB Micro Player ###
 ### Nick Bartley 2013 ###
 
-### Thread for Display Manager ###
-### Thread for Player Status ###
-### General Control Thread ###
-
 # GLOBALS
 
 #Available player options
-Options = [\
+OPTIONS = [\
 	("Stream", "URB", "http://people.bath.ac.uk/su9urb/audio/urb-hi.m3u"), \
 	("Stream", "JackFM", "http://stream1.radiomonitor.com/JackBristol-128.m3u"), \
 	("Folder", "Pop House Music", "giabplayer/PopHouse/"), \
@@ -32,534 +31,238 @@ Options = [\
 	("Folder", "USB Stick", "/media/usb/") \
 	]
 
-#Display Control Variables
-DisplayLineOne = " "
-DisplayLineTwo = " "
-
 #Player Control Variables
 PlayerControl = None
 PlayerStatus = None
-PlayerSource = None
+player_source = None
 StatusFlag = False
 
 #General Control Variables
 LastSting = 0
 SelectedMode = 0
-DISPLAY = pifacecad.PiFaceCAD()
-LISTENER = pifacecad.SwitchEventListener(chip=DISPLAY)
-PLAYER_LOCK = threading.Lock()
 Internet = False
 
-#Checks to see if there is an internet connection
-def InternetOn():
-    try:
-        Response=urllib2.urlopen('http://74.125.228.100',timeout=1)
-        return True
-    except urllib2.URLError as err: pass
-    return False
+class Player(object):
+	def __init__(self, CAD, VLC, initial_option=0):
+		
+		self.current_option_index = initial_option
+		self.CAD = CAD
+		self.VLC = VLC
+		self.number_of_options = len(OPTIONS)
+		self.last_sting = 0
+		self.highlighted_option_index = self.current_option_index
 
-#Polls for network connection and will persistantly try to connect to wifi
-def CheckInternet(Delay):
-	global Internet
-	LastInternet = 0
-	ExitFlag = False
-	
-	while True:
-		if ExitFlag:
-			thread.exit()
-		#PLAYER_LOCK.acquire()
-		Internet = InternetOn()
-		#PLAYER_LOCK.release()
-		if Internet == True and LastInternet == False:
-			print "Internet Connected"
+	@property
+	def current_option(self):
+		"""Returns the current mode of operation."""
+		return OPTIONS[self.current_option_index][1]
 
-		if Internet == False and LastInternet == True:
-			print "Internet Disconnected"
-			WLANOff = subprocess.Popen(["sudo", "ifconfig", "wlan0", "down"])
-			ETHOff = subprocess.Popen(["sudo", "ifconfig", "eth0", "down"])
-			WLANOn = subprocess.Popen(["sudo", "ifconfig", "wlan0", "up"])
-			ETHOn = subprocess.Popen(["sudo", "ifconfig", "eth0", "up"])
-		
-		LastInternet = Internet
-		time.sleep(Delay)
+	@property
+	def highlighted_option_index(self):
+		"""Returns the currently highlighted option."""
+		return self.highlighted_option_index
 	
-#Controls the LCD display
-def DisplayUpdate():
-	
-	LastDisplayLineOne = " "
-	LastDisplayLineTwo = " "
-	DisplayRefreshCounter = 0
-	
-	while True:
-		PLAYER_LOCK.acquire()
-		if DisplayRefreshCounter == 1000:
-			DISPLAY.clear()
-			DISPLAY.home()
-			DisplayRefreshCounter = 0
-		if DisplayLineOne <> LastDisplayLineOne:
-			DISPLAY.lcd.set_cursor(0, 0)
-			LineOne = DisplayLineOne[0:16]
-			DISPLAY.lcd.write(LineOne.ljust(16))
-			LastDisplayLineOne = DisplayLineOne
-			DisplayRefreshCounter = DisplayRefreshCounter+1
-		if DisplayLineTwo <> LastDisplayLineTwo :
-			DISPLAY.lcd.set_cursor(0, 1)
-			LineTwo = DisplayLineTwo[0:16]
-			DISPLAY.lcd.write(LineTwo.ljust(16))
-			LastDisplayLineTwo = DisplayLineTwo
-			DisplayRefreshCounter = DisplayRefreshCounter+1
-		PLAYER_LOCK.release()
-		
-		time.sleep(0.01)
-
-#Controls VLC Player
-def PlayerOperation():
-	
-	global PlayerStatus
-	global DisplayLineOne
-	global DisplayLineTwo
-	global StatusFlag
-	
-	PlayingTitle = " "
-	PlayerStatus = " "
-	VLC_STATUS= VLCClient("127.0.0.1",4212,"admin",1)
-	
-	while True:
-		
-		#PLAYER_LOCK.acquire()
-		VLC_STATUS.connect()
-		
-		PlayerState = VLC_STATUS.playing()
-		
-		if PlayerState == "0":
-			PlayerStatus = "Stopped"
+	def menu_left(self, highlighted_option=None):
+		if highlighted_option <> None:
+			highlighted_option = highlighted_option - 1
+			if highlighted_option < 0:
+				highlighted_option = (self.number_of_options-1)
+			self.highlighted_option_index = highlighted_option
+			return highlighted_option
 		else:
-			PlayerStatus = "Playing"
+			return False
+	
+	def menu_right(self, highlighted_option=None):
+		if highlighted_option <> None:
+			highlighted_option = highlighted_option + 1
+			if highlighted_option > (self.number_of_options-1):
+				highlighted_option = 0
+			self.highlighted_option_index = highlighted_option
+			return highlighted_option
+		else:
+			return False
+	
+	def menu_load(self, highlighted_option = None):
+		if highlighted_option <> None:
+			self.stop()
+			self.current_option_index = highlighted_option
+			self.load_player()
+		else:
+			return False
 			
-		PlayingTitle = VLC_STATUS.title()
+	def menu_load_and_play(self, highlighted_option = None):
+		if highlighted_option <> None:
+			self.stop()
+			self.current_option_index = highlighted_option
+			self.load_player()
+			self.play()
+		else:
+			return False
+			
+	def play(self):
+		self.VLC.connect()
+		if OPTIONS[self.current_option_index][0] == "Folder":
+			self.VLC.randomon()
+			self.VLC.next()
+		self.VLC.play()
+		self.VLC.disconnect()
+	
+	def stop(self):
+		if OPTIONS[self.current_option_index][0] == "Sting":
+			self.load_player()
+		self.VLC.connect()
+		self.VLC.stop()
+		self.VLC.disconnect()
+	
+	def load_player(self):
 		
-		VLC_STATUS.disconnect()
-		#PLAYER_LOCK.release()
+		option_type = OPTIONS[self.current_option_index][0]
+		option_name = OPTIONS[self.current_option_index][1]
+		option_address = OPTIONS[self.current_option_index][2]
+
+		self.VLC.connect()
+
+		if option_type == "Stream":
+			player_source = option_address
+			self.VLC.clear()
+			self.VLC.enqueue(player_source)
+			self.VLC.loopoff()
+		if option_type == "Folder":
+			player_source = option_address
+			self.VLC.clear()
+			self.VLC.enqueue(player_source)
+			self.VLC.loopon()
+			self.VLC.randomon()
+		if option_type == "File":
+			player_source = option_address
+			self.VLC.clear()
+			self.VLC.enqueue(player_source)
+			self.VLC.loopoff()
+		if option_type == "Help":
+			player_source = option_address
+			self.VLC.clear()
+			self.VLC.enqueue(player_source)
+			self.VLC.loopon()
+		if option_type == "Sting":
+			sting = str(self.last_sting+1)
+			option_name = "Sting: "+sting
+			sting_counter = len(glob.glob1(option_address,"*.mp3"))-1
+			self.last_sting = self.last_sting+1
+			if self.last_Sting > sting_counter:
+				self.last_sting = 0
+			player_source = option_address+sting+".mp3"
+			self.VLC.clear()
+			self.VLC.enqueue(option_address+sting+".mp3")
+			self.VLC.loopoff()
+			self.VLC.randomoff()
 		
-		if StatusFlag == True:
-			DisplayLineTwo = PlayerStatus.center(LCD_WIDTH-1)
+		self.VLC.disconnect()
+		return option_name
+	
+	
+class Display(object):
+	def __init__(self, CAD, VLC):
+		
+		#set up display
+		CAD.lcd.blink_off()
+		CAD.lcd.cursor_off()
+		CAD.lcd.backlight_on()
+		CAD.lcd.home()
+				
+		self.CAD = CAD
+		self.VLC = VLC
+		self.last_line_one = " "
+		self.last_line_two = " "
+
+	def update_display_line_one(self, line_one):
+		if line_one <> self.last_line_one:
+			self.CAD.lcd.set_cursor(0, 0)
+			line_one = line_one[0:LCD_WIDTH]
+			self.CAD.lcd.write(line_two.ljust(LCD_WIDTH))
+			self.last_line_one = line_one
+
+	def update_display_line_two(self, line_two):
+		if line_two <> self.last_line_two:
+			self.CAD.lcd.set_cursor(0, 1)
+			line_two = line_two[0:LCD_WIDTH]
+			self.CAD.lcd.write(line_two.ljust(LCD_WIDTH))
+			self.last_line_two = line_two
+			
+	def start_playing_info(self):
+		self.display_info = True
+		playing_title = " "
+		player_status = " "
+		
+		while self.display_info:
+			self.VLC.connect()
+			player_state = VLC.playing()
+		
+			if player_state == "0":
+				player_status = "Stopped"
+			else:
+				player_status = "Playing"
+				
+			playing_title = self.VLC.title()
+			self.VLC.disconnect()
+			status_text = player_status.center(LCD_WIDTH-1)
+			self.update_display_line_two(status_text)
 			time.sleep(1.5)
-			if PlayerState <> "0":
-				DisplayLineTwo = PlayingTitle.center(LCD_WIDTH-1)
-			time.sleep(1)
-			
-		if PlayerState == "0":
-			StatusFlag = False
-			
-		time.sleep(0.5)
+			if player_state <> "0":
+				title_text = playing_title.center(LCD_WIDTH-1)
+				self.update_display_line_two(title_text)
+			time.sleep(1)		
 		
-
-#GIAB Player Controlling System
-def ModeSelector(CurrentMode):
-	
-	global HighlightedMode
-	global DisplayLineOne
-	global DisplayLineTwo
-	global SelectedMode
-	
-	#LISTENER.deactivate()
-	
-	HighlightedMode = CurrentMode
-	LastModeOption = len(Options)-1
-	
-	PLAYER_LOCK.acquire()
-	DisplayLineOne = "Mode:"
-	DisplayLineTwo = Options[HighlightedMode][1].center(LCD_WIDTH-1)
-	PLAYER_LOCK.release()
-	
-	SelectorMode = True
-	
-	while SelectorMode == True:
+	def stop_playing_info(self):
+		self.display_info = False
 		
-		if DISPLAY.switches[7].value == 1:
-			HighlightedMode = HighlightedMode + 1
-			if HighlightedMode > LastModeOption:
-				HighlightedMode = 0
-			PLAYER_LOCK.acquire()
-			DisplayLineTwo = Options[HighlightedMode][1].center(LCD_WIDTH-1)
-			PLAYER_LOCK.release()
-			time.sleep(0.3)
-			
-		if DISPLAY.switches[6].value == 1:
-			HighlightedMode = HighlightedMode - 1
-			if HighlightedMode < 0:
-				HighlightedMode = LastModeOption
-			PLAYER_LOCK.acquire()
-			DisplayLineTwo = Options[HighlightedMode][1].center(LCD_WIDTH-1)
-			PLAYER_LOCK.release()
-			time.sleep(0.3)
-		
-		if DISPLAY.switches[5].value == 1:
-			PLAYER_LOCK.acquire()
-			SelectedMode = HighlightedMode
-			
-			OptionName = Options[SelectedMode][1]
-			DisplayLineTwo = " "
-			PLAYER_LOCK.release()
-			#LISTENER.activate()
-			LoadPlayer()
-			return SelectedMode
-			SelectorMode = False
-		
-		if DISPLAY.switches[0].value == 1:
-			PLAYER_LOCK.acquire()
-			SelectedMode = HighlightedMode
-			
-			OptionName = Options[SelectedMode][1]
-			DisplayLineTwo = " "
-			PLAYER_LOCK.release()
-			LoadPlayer()
-			time.sleep (0.3)
-			StatusFlag = True
-			VLC = VLCClient("127.0.0.1",4212,"admin",1)
-			VLC.connect()
-			if Options[SelectedMode][0] == "Folder":
-				VLC.randomon()
-			VLC.play()
-			VLC.disconnect()
-			StatusFlag = True
-			#LISTENER.activate()
-			return SelectedMode
-			SelectorMode = False
-			
-		if DISPLAY.switches[4].value == 1:
-			DISPLAY.lcd.clear()
-			DISPLAY.lcd.home()
-			DisplayLineOne = Options[SelectedMode][1]
-			StatusFlag = True
-			#LISTENER.activate()
-			SelectorMode = False
-			return
+def play_button(event):
+	global player
+	global display
+	player.play()
+	display.start_playing_info()
+	
+def stop_button(event):
+	global player
+	global display
+	player.stop()
+	display.stop_playing_info()
 
-#PlayerLoad
-def LoadPlayer():
-	
-	global PlayerControl
+def menu_button(event):
+	global player
+	global display
+	display.stop_playing_info()
+	display.update_display_line_one = "Mode:"
+	display.update_display_line_two = player.current_option()
 
-	global PlayerSource
-	global LastSting
-	global SelectedMode
-	global DisplayLineOne
-	
-	VLC = VLCClient("127.0.0.1",4212,"admin",1)
-	
-	OptionType = Options[SelectedMode][0]
-	OptionName = Options[SelectedMode][1]
-	OptionAddress = Options[SelectedMode][2]
+def select_button(event):
+	global player
+	global display
+	display.stop_playing_info()
+	player.menu_load(player.highlighted_option_index)
+	display.update_display_line_one = player.current_option()
 
-	VLC.connect()
-
-	if OptionType == "Stream":
-		DisplayLineOne = OptionName
-		PlayerSource = OptionAddress
-		VLC.clear()
-		VLC.enqueue(PlayerSource)
-		VLC.loopoff()
-	if OptionType == "Folder":
-		DisplayLineOne = OptionName
-		PlayerSource = OptionAddress
-		VLC.clear()
-		VLC.enqueue(PlayerSource)
-		VLC.loopon()
-		VLC.randomon()
-	if OptionType == "File":
-		DisplayLineOne = OptionName
-		PlayerSource = OptionAddress
-		VLC.clear()
-		VLC.enqueue(PlayerSource)
-		VLC.loopoff()
-	if OptionType == "Help":
-		DisplayLineOne = OptionName
-		PlayerSource = OptionAddress
-		VLC.clear()
-		VLC.enqueue(PlayerSource)
-		VLC.loopon()
-		#VLC.play()
-	if OptionType == "Sting":
-		Sting = str(LastSting+1)
-		DisplayLineOne = "Sting: "+Sting
-		StingCounter = len(glob.glob1(OptionAddress,"*.mp3"))-1
-		LastSting = LastSting+1
-		if LastSting > StingCounter:
-			LastSting = 0
-		PlayerSource = OptionAddress+Sting+".mp3"
-		VLC.clear()
-		VLC.enqueue(OptionAddress+Sting+".mp3")
-		VLC.loopoff()
-		VLC.randomoff()
+if __name__ == "__main__":
 	
-	VLC.disconnect()
-	#LISTENER.activate()
-	return
-	
-#Play Button
-def PlayButton(event):
-	
-	global StatusFlag
-	
-	StatusFlag = True
-	VLC = VLCClient("127.0.0.1",4212,"admin",1)
-	VLC.connect()
-	if Options[SelectedMode][0] == "Folder":
-		VLC.randomon()
-		VLC.next()
-	VLC.play()
-	VLC.disconnect()
-	StatusFlag = True
-
-#Stop Button
-def StopButton(event):
-	
-	if Options[SelectedMode][0] == "Sting":
-		LoadPlayer()
-	VLC = VLCClient("127.0.0.1",4212,"admin",1)
-	VLC.connect()
-	VLC.stop()
-	VLC.disconnect()
-
-#Mode Button
-def ModeButton(event):
-
-	global StatusFlag
-	
-	StatusFlag = False
-	ModeSelector(SelectedMode)
-
-#Reset Network
-def NetResetButton(event):
-	
-	global DisplayLineOne
-	global DisplayLineTwo
-	#global LISTENER
-	
-	#LISTENER.deactivate()
-	VLC = VLCClient("127.0.0.1",4212,"admin",1)
-	VLC.connect()
-	VLC.stop()
-	VLC.disconnect()
-	time.sleep(1)
-	DISPLAY.lcd.clear()
-	DISPLAY.lcd.home()
-	DisplayLineOne = "Network Reset".center(16)
-	time.sleep(3)
-	NETWORK_RESTART = subprocess.Popen(["sudo", "/etc/init.d/networking", "restart"])
-
-#Shutdown Pi
-def ShutdownButton(event):
-	
-	global DisplayLineOne
-	global DisplayLineTwo
-	global SelectedMode
-	global StatusFlag
-
-	PLAYER_LOCK.acquire()
-	StatusFlag = False
-	PLAYER_LOCK.release()
-	
-	time.sleep(1)
-	DISPLAY.lcd.clear()
-	DISPLAY.lcd.home()
-	PLAYER_LOCK.acquire()
-	DisplayLineOne = "Shutdown...".center(LCD_WIDTH-1)
-	DisplayLineTwo = "Press again...".center(LCD_WIDTH-1)
-	PLAYER_LOCK.release()
-	
-	
-	while True:
-		if DISPLAY.switches[2].value == 1:
-			VLC = VLCClient("127.0.0.1",4212,"admin",1)
-			VLC.connect()
-			VLC.stop()
-			VLC.disconnect()
-			time.sleep(2)
-			DISPLAY.lcd.clear()
-			DISPLAY.lcd.home()
-			DisplayLineOne = "Shutdown...".center(LCD_WIDTH-1)
-			SHUTDOWN = subprocess.Popen(["sudo", "halt"])
-			for i in range (10, 0, -1):
-				DisplayLineTwo = str(i).center(LCD_WIDTH-1)
-				time.sleep(1)
-		if DISPLAY.switches[4].value == 1:
-			DISPLAY.lcd.clear()
-			DISPLAY.lcd.home()
-			PLAYER_LOCK.acquire()
-			DisplayLineOne = Options[SelectedMode][1]
-			StatusFlag = True
-			PLAYER_LOCK.release()
-			return
-
-#Reboot Pi
-def RebootButton(event):
-	
-	global DisplayLineOne
-	global DisplayLineTwo
-	global StatusFlag
-	global SelectedMode
-	
-	PLAYER_LOCK.acquire()
-	StatusFlag = False
-	PLAYER_LOCK.release()
-	
-	time.sleep(1)
-	DISPLAY.lcd.clear()
-	DISPLAY.lcd.home()
-	PLAYER_LOCK.acquire()
-	DisplayLineOne = "Rebooting...".center(LCD_WIDTH-1)
-	DisplayLineTwo = "Press again...".center(LCD_WIDTH-1)
-	PLAYER_LOCK.release()
-	while True:
-		if DISPLAY.switches[3].value == 1:
-			VLC = VLCClient("127.0.0.1",4212,"admin",1)
-			VLC.connect()
-			VLC.stop()
-			VLC.disconnect()
-			time.sleep(2)
-			DISPLAY.lcd.clear()
-			DISPLAY.lcd.home()
-			DisplayLineOne = "Rebooting...".center(LCD_WIDTH-1)
-			SHUTDOWN = subprocess.Popen(["sudo", "reboot"])
-			for i in range (10, 0, -1):
-				DisplayLineTwo = str(i).center(LCD_WIDTH-1)
-				time.sleep(1)
-		if DISPLAY.switches[4].value == 1:
-			DISPLAY.lcd.clear()
-			DISPLAY.lcd.home()
-			PLAYER_LOCK.acquire()
-			DisplayLineOne = Options[SelectedMode][1]
-			StatusFlag = True
-			PLAYER_LOCK.release()
-			return
-	
-#System Initialization
-def Initialize():
-	#global LISTENER
-	
-	WLANOff = subprocess.Popen(["sudo", "ifconfig", "wlan0", "down"])
-	WLANOn = subprocess.Popen(["sudo", "ifconfig", "wlan0", "up"])
-	
-	#PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet"])
 	PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "150", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}"])
-	#PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "250", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}", "--sout", "'#std{access=http,mux=ts,dst=192.168.0.5:1234}'"])
+	cad = pifacecad.PiFaceCAD()
+	PLAYER_LOCK = threading.Lock()
+	vlc = VLCClient("127.0.0.1",4212,"admin",1)
 	
+	global display
+	global player
 	
-	DISPLAY.lcd.backlight_on()
-	DISPLAY.lcd.blink_off()
-	DISPLAY.lcd.cursor_off()
+	player = Player(cad, vlc)
+	display = Display(cad, vlc)
 	
-	CONNECTED = pifacecad.LCDBitmap([0b01110, 0b10001, 0b00000, 0b00100, 0b01010, 0b00000, 0b00100, 0b00000])
-	DISPLAY.lcd.store_custom_bitmap(0, CONNECTED)
-	
-	DISPLAY.lcd.clear()
-	DISPLAY.lcd.home()
-	DISPLAY.lcd.write("GIAB Micro")
-	DISPLAY.lcd.set_cursor(0, 1)
-	DISPLAY.lcd.write("Version 2.0")
-	
-	time.sleep(2.5)
-	
-	DISPLAY.lcd.clear()
-	DISPLAY.lcd.home()
-	DISPLAY.lcd.write("Copyright 2013")
-	DISPLAY.lcd.set_cursor(0, 1)
-	DISPLAY.lcd.write("Nick Bartley")
-	
-	time.sleep(2.5)
-	
-	DISPLAY.lcd.clear()
-	DISPLAY.lcd.home()
-	DISPLAY.lcd.write("Internet")
-	DISPLAY.lcd.set_cursor(0, 1)
-	if InternetOn():
-		DISPLAY.lcd.write("Connected")
-		DISPLAY.lcd.set_cursor(15, 1)
-		DISPLAY.lcd.write_custom_bitmap(0)
-	else:
-		DISPLAY.lcd.write("Disconnected")
-	
-	time.sleep(2.5)
-	
-	DISPLAY.lcd.clear()
-	LISTENER.register(0, pifacecad.IODIR_FALLING_EDGE, PlayButton)
-	LISTENER.register(1, pifacecad.IODIR_FALLING_EDGE, StopButton)
-	LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, ShutdownButton)
-	LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, RebootButton)
-	LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, ModeButton)
+	LISTENER.register(0, pifacecad.IODIR_FALLING_EDGE, play_button)
+	LISTENER.register(1, pifacecad.IODIR_FALLING_EDGE, stop_button)
+	#LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, shutdown_button)
+	#LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, reboot_button)
+	#LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, menu_button)
+	LISTENER.register(5, pifacecad.IODIR_FALLING_EDGE, select_button)
+	#LISTENER.register(6, pifacecad.IODIR_FALLING_EDGE, left_button)
+	#LISTENER.register(7, pifacecad.IODIR_FALLING_EDGE, right_button)
 	LISTENER.activate()
 	
-#Main Program
-def Main():
-	Initialize()
-	time.sleep(0.5)
-	ModeSelector(SelectedMode)
-	ExitFlag = False
-	
-	while True:
-		#Comment
-		if ExitFlag:
-			return
-		time.sleep(0.5)
-
-#Thread for Main Control
-class ControlThread (threading.Thread):
-    def __init__(self, threadID, name):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-    def run(self):
-        print "Starting " + self.name
-        Main()
-        print "Exiting " + self.name
-
-#Thread for Display
-class DisplayThread (threading.Thread):
-    def __init__(self, threadID, name):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-    def run(self):
-        print "Starting " + self.name
-        DisplayUpdate()
-        print "Exiting " + self.name
-		
-#Thread for VLC Player Status
-class PlayerThread (threading.Thread):
-    def __init__(self, threadID, name):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-    def run(self):
-        print "Starting " + self.name
-        PlayerOperation()
-        print "Exiting " + self.name
-
-#Thread for Network Connection
-class NetworkThread (threading.Thread):
-    def __init__(self, threadID, name):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-    def run(self):
-        print "Starting " + self.name
-        CheckInternet(10)
-        print "Exiting " + self.name
-		
-# Create new threads
-thread1 = ControlThread(1, "Control Thread")
-thread2 = DisplayThread(2, "Display Thread")
-thread3 = PlayerThread(3, "Player Thread")
-thread4 = NetworkThread(4, "Network Connection Thread")
-
-
-# Start Threads
-thread4.start()
-time.sleep(2)
-thread1.start()
-time.sleep(8)
-thread2.start()
-time.sleep(3)
-thread3.start()
+	display.update_display_line_one = "Mode:"
+	display.update_display_line_two = player.current_option()
