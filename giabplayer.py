@@ -267,4 +267,5 @@ if __name__ == "__main__":
 	LISTENER.activate()
 	
 	display.update_display_line_one("Mode:")
-	display.update_display_line_two(player.current_option())
+	playing_text = player.current_option()
+	display.update_display_line_two(playing_text)
