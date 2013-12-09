@@ -52,14 +52,14 @@ class Player(object):
 		self.last_sting = 0
 		self.highlighted_option_index = initial_option
 
-	@property
+	#@property
 	def current_option(self):
-		"""Returns the current mode of operation."""
+		#"""Returns the current mode of operation."""
 		return OPTIONS[self.current_option_index][1]
 
-	@property
+	#@property
 	def current_highlighted_option_index(self):
-		"""Returns the currently highlighted option."""
+		#"""Returns the currently highlighted option."""
 		return self.highlighted_option_index
 	
 	def menu_left(self, highlighted_option=None):
