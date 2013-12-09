@@ -50,7 +50,7 @@ class Player(object):
 		self.VLC = VLC
 		self.number_of_options = len(OPTIONS)
 		self.last_sting = 0
-		self.highlighted_option_index = self.current_option_index
+		self.highlighted_option_index = initial_option
 
 	@property
 	def current_option(self):
