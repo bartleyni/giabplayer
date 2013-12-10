@@ -55,7 +55,7 @@ class Player(object):
 	#@property
 	def current_option(self):
 		#"""Returns the current mode of operation."""
-		return OPTIONS[self.current_option_index()][1]
+		return OPTIONS[self.get_current_option_index()][1]
 
 	#@property
 	def current_highlighted_option_index(self):
@@ -105,14 +105,14 @@ class Player(object):
 			
 	def play(self):
 		self.VLC.connect()
-		if OPTIONS[self.current_option_index][0] == "Folder":
+		if OPTIONS[self.get_current_option_index()][0] == "Folder":
 			self.VLC.randomon()
 			self.VLC.next()
 		self.VLC.play()
 		self.VLC.disconnect()
 	
 	def stop(self):
-		if OPTIONS[self.current_option_index][0] == "Sting":
+		if OPTIONS[self.get_current_option_index()][0] == "Sting":
 			self.load_player()
 		self.VLC.connect()
 		self.VLC.stop()
@@ -120,7 +120,7 @@ class Player(object):
 	
 	def load_player(self):
 		
-		current_index = self.current_option_index
+		current_index = self.get_current_option_index()
 		option_type = OPTIONS[current_index][0]
 		option_name = OPTIONS[current_index][1]
 		option_address = OPTIONS[current_index][2]
