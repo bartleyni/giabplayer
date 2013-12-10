@@ -234,7 +234,7 @@ class Display(object):
 		
 		while self.display_info:
 			self.VLC.connect()
-			player_state = VLC.playing()
+			player_state = self.VLC.playing()
 		
 			if player_state == "0":
 				player_status = "Stopped"
