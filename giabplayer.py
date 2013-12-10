@@ -19,18 +19,50 @@ from pifacecad.lcd import LCD_WIDTH
 # GLOBALS
 
 #Available player options
-OPTIONS = [\
-	("Stream", "URB", "http://people.bath.ac.uk/su9urb/audio/urb-hi.m3u"), \
-	("Stream", "JackFM", "http://stream1.radiomonitor.com/JackBristol-128.m3u"), \
-	("Folder", "Pop House Music", "giabplayer/PopHouse/"), \
-	("Folder", "ICIA House Music", "giabplayer/ICIAHouse/"), \
-	("File", "Applause", "giabplayer/cannedApplause.wav"), \
-	("File", "Ring Out", "giabplayer/MoneyForNothing.mp3"), \
-	("Sting", "Stings", "giabplayer/Stings/"), \
-	("Help", "Help", "giabplayer/Help.mp3"), \
-	("Folder", "USB Stick", "/media/usb/") \
-	]
 
+# OPTIONS = [\
+	# ("Stream", "URB", "http://people.bath.ac.uk/su9urb/audio/urb-hi.m3u"), \
+	# ("Stream", "JackFM", "http://stream1.radiomonitor.com/JackBristol-128.m3u"), \
+	# ("Folder", "Pop House Music", "giabplayer/PopHouse/"), \
+	# ("Folder", "ICIA House Music", "giabplayer/ICIAHouse/"), \
+	# ("File", "Applause", "giabplayer/cannedApplause.wav"), \
+	# ("File", "Ring Out", "giabplayer/MoneyForNothing.mp3"), \
+	# ("Sting", "Stings", "giabplayer/Stings/"), \
+	# ("Help", "Help", "giabplayer/Help.mp3"), \
+	# ("Folder", "USB Stick", "/media/usb/") \
+	# ]
+	
+OPTIONS = [
+	{'type': "Stream",
+	'name': "URB",
+	'source': "http://people.bath.ac.uk/su9urb/audio/urb-hi.m3u"},
+	{'type': "Stream",
+	'name': "JackFM",
+	'source': "http://stream1.radiomonitor.com/JackBristol-128.m3u"},
+	{'type': "Folder",
+	'name': "Pop House Music",
+	'source': "giabplayer/PopHouse/"},
+	{'type': "Folder",
+	'name': "ICIA House Music",
+	'source': "giabplayer/ICIAHouse/"},
+	{'type': "File",
+	'name': "Applause",
+	'source': "giabplayer/cannedApplause.wav"},
+	{'type': "File",
+	'name': "Ring Out",
+	'source': "giabplayer/MoneyForNothing.mp3"},
+	{'type': "Sting", 
+	'name': "Stings", 
+	'source': "giabplayer/Stings/"},
+	('type': "Help", 
+	'name': "Help", 
+	'source': "giabplayer/Help.mp3"},
+	('type': "Folder", 
+	'name': "USB Stick", 
+	'source':"/media/usb/"},
+	]
+	
+	
 #Player Control Variables
 PlayerControl = None
 PlayerStatus = None
@@ -60,7 +92,7 @@ class Player(object):
 	@property
 	def current_option(self):
 		"""Returns the current mode of operation."""
-		return OPTIONS[get_current_option_index()][1]
+		return OPTIONS[self.current_option_index]
 
 	@property
 	def current_highlighted_option_index(self):
@@ -108,14 +140,14 @@ class Player(object):
 			
 	def play(self):
 		self.VLC.connect()
-		if OPTIONS[self.get_current_option_index()][0] == "Folder":
+		if self.current_option['type'] == "Folder":
 			self.VLC.randomon()
 			self.VLC.next()
 		self.VLC.play()
 		self.VLC.disconnect()
 	
 	def stop(self):
-		if OPTIONS[self.get_current_option_index()][0] == "Sting":
+		if self.current_option['type']  == "Sting":
 			self.load_player()
 		self.VLC.connect()
 		self.VLC.stop()
@@ -123,10 +155,9 @@ class Player(object):
 	
 	def load_player(self):
 		
-		current_index = self.get_current_option_index()
-		option_type = OPTIONS[current_index][0]
-		option_name = OPTIONS[current_index][1]
-		option_address = OPTIONS[current_index][2]
+		option_type = self.current_option['type']
+		option_name = self.current_option['name']
+		option_address = self.current_option['source']]
 
 		self.VLC.connect()
 
@@ -275,5 +306,5 @@ if __name__ == "__main__":
 	LISTENER.activate()
 	
 	display.update_display_line_one("Mode:")
-	playing_text = player.current_option()
+	playing_text = player.current_option['name']
 	display.update_display_line_two(playing_text)
