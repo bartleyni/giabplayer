@@ -241,7 +241,7 @@ def play_button(event):
 	global display
 	player.play()
 	display.update_display_line_one = player.current_option['name']
-	display_thread = threading.Thread(target=display.start_playing_info,)
+	display_thread = threading.Thread(target=display.start_playing_info)
 	display_thread.start()
 	
 def stop_button(event):
@@ -296,7 +296,7 @@ if __name__ == "__main__":
 	LISTENER.register(1, pifacecad.IODIR_FALLING_EDGE, stop_button)
 	#LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, shutdown_button)
 	#LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, reboot_button)
-	#LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, menu_button)
+	LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, menu_button)
 	LISTENER.register(5, pifacecad.IODIR_FALLING_EDGE, select_button)
 	LISTENER.register(6, pifacecad.IODIR_FALLING_EDGE, left_button)
 	LISTENER.register(7, pifacecad.IODIR_FALLING_EDGE, right_button)
