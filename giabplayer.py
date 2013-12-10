@@ -111,12 +111,6 @@ class Player(object):
 		self.stop()
 		self.current_option_index = self.highlighted_option_index
 		self.load_player()
-			
-	def menu_load_and_play(self):
-		self.stop()
-		self.current_option_index = self.highlighted_option_index
-		self.load_player()
-		self.play()
 
 	def play(self):
 		self.VLC.connect()
