@@ -232,6 +232,7 @@ class Display(object):
 			time.sleep(1)
 		
 		Thread.exit()
+		return
 		
 	def stop_playing_info(self):
 		self.display_info = False
@@ -240,7 +241,7 @@ def play_button(event):
 	global player
 	global display
 	player.play()
-	display.update_display_line_one = player.current_option['name']
+	display.update_display_line_one(player.current_option['name'])
 	display_thread = threading.Thread(target=display.start_playing_info)
 	display_thread.start()
 	
@@ -254,27 +255,27 @@ def menu_button(event):
 	global player
 	global display
 	display.stop_playing_info()
-	display.update_display_line_one = "Mode:"
-	display.update_display_line_two = player.current_option['name']
+	display.update_display_line_one("Mode:")
+	display.update_display_line_two(player.current_option['name'])
 	
 def left_button(event):
 	global player
 	global display
 	player.menu_left()
-	display.update_display_line_two = player.highlighted_option['name']
+	display.update_display_line_two(player.highlighted_option['name'])
 	
 def right_button(event):
 	global player
 	global display
 	player.menu_right()
-	display.update_display_line_two = player.highlighted_option['name']
+	display.update_display_line_two(player.highlighted_option['name'])
 
 def select_button(event):
 	global player
 	global display
 	display.stop_playing_info()
 	player.menu_load()
-	display.update_display_line_one = player.current_option['name']
+	display.update_display_line_one(player.current_option['name'])
 
 if __name__ == "__main__":
 	
