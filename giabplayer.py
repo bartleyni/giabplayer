@@ -20,18 +20,6 @@ from pifacecad.lcd import LCD_WIDTH
 
 #Available player options
 
-# OPTIONS = [\
-	# ("Stream", "URB", "http://people.bath.ac.uk/su9urb/audio/urb-hi.m3u"), \
-	# ("Stream", "JackFM", "http://stream1.radiomonitor.com/JackBristol-128.m3u"), \
-	# ("Folder", "Pop House Music", "giabplayer/PopHouse/"), \
-	# ("Folder", "ICIA House Music", "giabplayer/ICIAHouse/"), \
-	# ("File", "Applause", "giabplayer/cannedApplause.wav"), \
-	# ("File", "Ring Out", "giabplayer/MoneyForNothing.mp3"), \
-	# ("Sting", "Stings", "giabplayer/Stings/"), \
-	# ("Help", "Help", "giabplayer/Help.mp3"), \
-	# ("Folder", "USB Stick", "/media/usb/") \
-	# ]
-	
 OPTIONS = [
 	{'type': "Stream",
 	'name': "URB",
@@ -61,7 +49,6 @@ OPTIONS = [
 	'name': "USB Stick", 
 	'source':"/media/usb/"},
 	]
-	
 	
 #Player Control Variables
 PlayerControl = None
@@ -121,13 +108,10 @@ class Player(object):
 		else:
 			return False
 	
-	def menu_load(self, highlighted_option = None):
-		if highlighted_option <> None:
-			self.stop()
-			self.current_option_index = highlighted_option
-			self.load_player()
-		else:
-			return False
+	def menu_load(self):
+		self.stop()
+		self.current_option_index = highlighted_option
+		self.load_player()
 			
 	def menu_load_and_play(self, highlighted_option = None):
 		if highlighted_option <> None:
@@ -262,7 +246,6 @@ def play_button(event):
 	player.play()
 	display_thread = threading.Thread(target=display.start_playing_info,)
 	display_thread.start()
-	display_thread.join()
 	
 def stop_button(event):
 	global player
@@ -281,7 +264,7 @@ def select_button(event):
 	global player
 	global display
 	display.stop_playing_info()
-	player.menu_load(player.current_highlighted_option_index)
+	player.menu_load()
 	display.update_display_line_one = player.current_option['name']
 
 if __name__ == "__main__":
