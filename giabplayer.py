@@ -224,9 +224,9 @@ class Display(object):
 			playing_title = self.VLC.title()
 			self.VLC.disconnect()
 			time.sleep(0.5)
-			status_text = player_status#.center(LCD_WIDTH-1)
-			print status_text
-			self.update_display_line_two(status_text)
+			#status_text = player_status#.center(LCD_WIDTH-1)
+			#print status_text
+			self.update_display_line_two(player_status)
 			time.sleep(1.0)
 			if player_state <> "0":
 				title_text = playing_title.center(LCD_WIDTH-1)
