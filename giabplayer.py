@@ -85,43 +85,34 @@ class Player(object):
 	def current_highlighted_option_index(self):
 		"""Returns the currently highlighted option."""
 		return self.highlighted_option_index
-		
-
 	
-	def menu_left(self, highlighted_option=None):
-		if highlighted_option <> None:
-			highlighted_option = highlighted_option - 1
-			if highlighted_option < 0:
-				highlighted_option = (self.number_of_options-1)
-			self.highlighted_option_index = highlighted_option
-			return highlighted_option
-		else:
-			return False
+	def menu_left(self):
+		highlighted_option = self.highlighted_option_index
+		highlighted_option = highlighted_option - 1
+		if highlighted_option < 0:
+			highlighted_option = (self.number_of_options-1)
+		self.highlighted_option_index = highlighted_option
+		return highlighted_option
 	
-	def menu_right(self, highlighted_option=None):
-		if highlighted_option <> None:
-			highlighted_option = highlighted_option + 1
-			if highlighted_option > (self.number_of_options-1):
-				highlighted_option = 0
-			self.highlighted_option_index = highlighted_option
-			return highlighted_option
-		else:
-			return False
+	def menu_right(self):
+		highlighted_option = self.highlighted_option_index
+		highlighted_option = highlighted_option + 1
+		if highlighted_option > (self.number_of_options-1):
+			highlighted_option = 0
+		self.highlighted_option_index = highlighted_option
+		return highlighted_option
 	
 	def menu_load(self):
 		self.stop()
-		self.current_option_index = highlighted_option
+		self.current_option_index = self.highlighted_option_index
 		self.load_player()
 			
-	def menu_load_and_play(self, highlighted_option = None):
-		if highlighted_option <> None:
-			self.stop()
-			self.current_option_index = highlighted_option
-			self.load_player()
-			self.play()
-		else:
-			return False
-			
+	def menu_load_and_play(self):
+		self.stop()
+		self.current_option_index = self.highlighted_option_index
+		self.load_player()
+		self.play()
+
 	def play(self):
 		self.VLC.connect()
 		if self.current_option['type'] == "Folder":
