@@ -258,7 +258,7 @@ def play_button(event):
 	global player
 	global display
 	player.play()
-	t = Thread(target=display.start_playing_info,)
+	t = threading.Thread(target=display.start_playing_info,)
 	t.start()
 	
 def stop_button(event):
