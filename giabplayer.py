@@ -180,7 +180,7 @@ class Player(object):
 	
 	
 class Display(object):
-	def __init__(self, CAD, VLC):
+	def __init__(self, CAD, VLC, LOCK):
 		
 		#set up display
 		CAD.lcd.blink_off()
@@ -190,23 +190,28 @@ class Display(object):
 				
 		self.CAD = CAD
 		self.VLC = VLC
+		self.LOCK = LOCK
 		self.last_line_one = " "
 		self.last_line_two = " "
 
 	def update_display_line_one(self, line_one):
+		self.LOCK.acquire()
 		if line_one <> self.last_line_one:
 			self.CAD.lcd.set_cursor(0, 0)
 			line_one = line_one[0:LCD_WIDTH]
 			self.CAD.lcd.write(line_one.ljust(LCD_WIDTH))
 			self.last_line_one = line_one
-
+		self.LOCK.release()
+		
 	def update_display_line_two(self, line_two):
+		self.LOCK.acquire()
 		if line_two <> self.last_line_two:
 			self.CAD.lcd.set_cursor(0, 1)
 			line_two = line_two[0:LCD_WIDTH]
 			self.CAD.lcd.write(line_two.ljust(LCD_WIDTH))
 			self.last_line_two = line_two
-			
+		self.LOCK.release()
+		
 	def start_playing_info(self):
 		self.display_info = True
 		playing_title = " "
@@ -230,8 +235,6 @@ class Display(object):
 				title_text = playing_title.center(LCD_WIDTH-1)
 				self.update_display_line_two(title_text)
 			time.sleep(1)
-		
-		Thread.exit()
 		return
 		
 	def stop_playing_info(self):
@@ -281,7 +284,7 @@ if __name__ == "__main__":
 	
 	PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "150", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}"])
 	cad = pifacecad.PiFaceCAD()
-	PLAYER_LOCK = threading.Lock()
+	display_lock = threading.Lock()
 	vlc = VLCClient("127.0.0.1",4212,"admin",1)
 	vlc_display = VLCClient("127.0.0.1",4212,"admin",1)
 	
@@ -289,7 +292,7 @@ if __name__ == "__main__":
 	global player
 	
 	player = Player(cad, vlc)
-	display = Display(cad, vlc_display)
+	display = Display(cad, vlc_display, display_lock)
 	
 	LISTENER = pifacecad.SwitchEventListener(chip=cad)
 	
