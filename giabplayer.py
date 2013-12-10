@@ -87,7 +87,7 @@ class Player(object):
 		return OPTIONS[self.highlighted_option_index]
 
 	@property
-	def current_highlighted_option_index(self):
+	def get_highlighted_option_index(self):
 		"""Returns the currently highlighted option."""
 		return self.highlighted_option_index
 	
@@ -243,6 +243,8 @@ class Display(object):
 def play_button(event):
 	global player
 	global display
+	if player.get_highlighted_option_index() <> player.get_current_option_index():
+		player.menu_load()
 	player.play()
 	display.update_display_line_one(player.current_option['name'])
 	display_thread = threading.Thread(target=display.start_playing_info)
