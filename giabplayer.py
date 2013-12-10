@@ -217,14 +217,15 @@ class Display(object):
 			player_state = self.VLC.playing()
 		
 			if player_state == "0":
-				player_status = "Stopped"
+				player_status = "Stopped".center(LCD_WIDTH-1)
 			else:
-				player_status = "Playing"
+				player_status = "Playing".center(LCD_WIDTH-1)
 				
 			playing_title = self.VLC.title()
 			self.VLC.disconnect()
 			time.sleep(0.5)
-			status_text = player_status.center(LCD_WIDTH-1)
+			status_text = player_status#.center(LCD_WIDTH-1)
+			print status_text
 			self.update_display_line_two(status_text)
 			time.sleep(1.0)
 			if player_state <> "0":
