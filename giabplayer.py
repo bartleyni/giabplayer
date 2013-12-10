@@ -237,7 +237,7 @@ class Display(object):
 def play_button(event):
 	global player
 	global display
-	if player.get_highlighted_option_index() <> player.get_current_option_index():
+	if player.get_highlighted_option_index <> player.get_current_option_index:
 		player.menu_load()
 	player.play()
 	display.update_display_line_one(player.current_option['name'])
