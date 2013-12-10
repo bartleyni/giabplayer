@@ -167,7 +167,7 @@ class Player(object):
 			option_name = "Sting: "+sting
 			sting_counter = len(glob.glob1(option_address,"*.mp3"))-1
 			self.last_sting = self.last_sting+1
-			if self.last_Sting > sting_counter:
+			if self.last_sting > sting_counter:
 				self.last_sting = 0
 			player_source = option_address+sting+".mp3"
 			self.VLC.clear()
@@ -224,14 +224,14 @@ class Display(object):
 			playing_title = self.VLC.title()
 			self.VLC.disconnect()
 			time.sleep(0.5)
-			#status_text = player_status#.center(LCD_WIDTH-1)
-			#print status_text
 			self.update_display_line_two(player_status)
 			time.sleep(1.0)
 			if player_state <> "0":
 				title_text = playing_title.center(LCD_WIDTH-1)
 				self.update_display_line_two(title_text)
-			time.sleep(1)		
+			time.sleep(1)
+		
+		Thread.exit()
 		
 	def stop_playing_info(self):
 		self.display_info = False
