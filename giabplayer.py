@@ -243,9 +243,10 @@ class Display(object):
 				
 			playing_title = self.VLC.title()
 			self.VLC.disconnect()
+			time.sleep(0.5)
 			status_text = player_status.center(LCD_WIDTH-1)
 			self.update_display_line_two(status_text)
-			time.sleep(1.5)
+			time.sleep(1.0)
 			if player_state <> "0":
 				title_text = playing_title.center(LCD_WIDTH-1)
 				self.update_display_line_two(title_text)
@@ -289,12 +290,13 @@ if __name__ == "__main__":
 	cad = pifacecad.PiFaceCAD()
 	PLAYER_LOCK = threading.Lock()
 	vlc = VLCClient("127.0.0.1",4212,"admin",1)
+	vlc_display = VLCClient("127.0.0.1",4212,"admin",1)
 	
 	global display
 	global player
 	
 	player = Player(cad, vlc)
-	display = Display(cad, vlc)
+	display = Display(cad, vlc_display)
 	
 	LISTENER = pifacecad.SwitchEventListener(chip=cad)
 	
