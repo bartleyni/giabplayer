@@ -271,14 +271,14 @@ def menu_button(event):
 	global display
 	display.stop_playing_info()
 	display.update_display_line_one = "Mode:"
-	display.update_display_line_two = player.current_option()
+	display.update_display_line_two = player.current_option['name']
 
 def select_button(event):
 	global player
 	global display
 	display.stop_playing_info()
 	player.menu_load(player.current_highlighted_option_index)
-	display.update_display_line_one = player.current_option()
+	display.update_display_line_one = player.current_option['name']
 
 if __name__ == "__main__":
 	
