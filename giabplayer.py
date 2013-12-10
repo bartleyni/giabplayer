@@ -55,12 +55,16 @@ class Player(object):
 	#@property
 	def current_option(self):
 		#"""Returns the current mode of operation."""
-		return OPTIONS[self.current_option_index][1]
+		return OPTIONS[self.current_option_index()][1]
 
 	#@property
 	def current_highlighted_option_index(self):
 		#"""Returns the currently highlighted option."""
 		return self.highlighted_option_index
+	
+	def get_current_option_index(self):
+		#"""Returns the currentl option."""
+		return self.current_option_index
 	
 	def menu_left(self, highlighted_option=None):
 		if highlighted_option <> None:
