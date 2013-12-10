@@ -257,9 +257,10 @@ class Display(object):
 def play_button(event):
 	global player
 	global display
+	display.update_display_line_one = player.current_option['name']
 	player.play()
-	t = threading.Thread(target=display.start_playing_info,)
-	t.start()
+	display_thread = threading.Thread(target=display.start_playing_info,)
+	display_thread.start()
 	
 def stop_button(event):
 	global player
