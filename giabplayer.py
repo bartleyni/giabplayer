@@ -157,7 +157,7 @@ class Player(object):
 		
 		option_type = self.current_option['type']
 		option_name = self.current_option['name']
-		option_address = self.current_option['source']]
+		option_address = self.current_option['source']
 
 		self.VLC.connect()
 
