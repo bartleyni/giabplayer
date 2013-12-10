@@ -60,7 +60,7 @@ class Player(object):
 	@property
 	def current_option(self):
 		"""Returns the current mode of operation."""
-		return OPTIONS[self.get_current_option_index()][1]
+		return OPTIONS[get_current_option_index()][1]
 
 	@property
 	def current_highlighted_option_index(self):
