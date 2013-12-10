@@ -80,6 +80,10 @@ class Player(object):
 	def current_option(self):
 		"""Returns the current mode of operation."""
 		return OPTIONS[self.current_option_index]
+	
+	def highlighted_option(self):
+		"""Returns the highlighted mode of operation."""
+		return OPTIONS[self.highlighted_option_index]
 
 	@property
 	def current_highlighted_option_index(self):
@@ -233,8 +237,8 @@ class Display(object):
 def play_button(event):
 	global player
 	global display
-	display.update_display_line_one = player.current_option['name']
 	player.play()
+	display.update_display_line_one = player.current_option['name']
 	display_thread = threading.Thread(target=display.start_playing_info,)
 	display_thread.start()
 	
@@ -250,6 +254,13 @@ def menu_button(event):
 	display.stop_playing_info()
 	display.update_display_line_one = "Mode:"
 	display.update_display_line_two = player.current_option['name']
+	
+def left_button(event):
+	global player
+	global display
+	player.menu_left()
+	
+	display.update_display_line_two = player.highlighted_option['name']
 
 def select_button(event):
 	global player
@@ -280,8 +291,8 @@ if __name__ == "__main__":
 	#LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, reboot_button)
 	#LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, menu_button)
 	LISTENER.register(5, pifacecad.IODIR_FALLING_EDGE, select_button)
-	#LISTENER.register(6, pifacecad.IODIR_FALLING_EDGE, left_button)
-	#LISTENER.register(7, pifacecad.IODIR_FALLING_EDGE, right_button)
+	LISTENER.register(6, pifacecad.IODIR_FALLING_EDGE, left_button)
+	LISTENER.register(7, pifacecad.IODIR_FALLING_EDGE, right_button)
 	LISTENER.activate()
 	
 	display.update_display_line_one("Mode:")
