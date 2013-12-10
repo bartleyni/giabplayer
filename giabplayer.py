@@ -54,10 +54,10 @@ OPTIONS = [
 	{'type': "Sting", 
 	'name': "Stings", 
 	'source': "giabplayer/Stings/"},
-	('type': "Help", 
+	{'type': "Help", 
 	'name': "Help", 
 	'source': "giabplayer/Help.mp3"},
-	('type': "Folder", 
+	{'type': "Folder", 
 	'name': "USB Stick", 
 	'source':"/media/usb/"},
 	]
