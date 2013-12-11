@@ -70,7 +70,13 @@ class Player(object):
 		self.number_of_options = len(OPTIONS)
 		self.last_sting = 0
 		self.highlighted_option_index = initial_option
-
+		self.menu_mode = True
+		
+	@property
+	def get_menu_mode(self):
+		"""Returns the menu mode True or False."""
+		return self.menu_mode
+		
 	@property
 	def get_current_option_index(self):
 		"""Returns the currentl option."""
@@ -95,27 +101,34 @@ class Player(object):
 	def get_current_sting(self):
 		"""Returns the current sting number."""
 		return self.last_sting+1
-		
+	
+	def set_menu_mode(self, mode=True):
+		self.menu_mode == mode
+	
 	def menu_left(self):
-		highlighted_option = self.highlighted_option_index
-		highlighted_option = highlighted_option - 1
-		if highlighted_option < 0:
-			highlighted_option = (self.number_of_options-1)
-		self.highlighted_option_index = highlighted_option
-		return highlighted_option
+		if self.menu_mode == True:
+			highlighted_option = self.highlighted_option_index
+			highlighted_option = highlighted_option - 1
+			if highlighted_option < 0:
+				highlighted_option = (self.number_of_options-1)
+			self.highlighted_option_index = highlighted_option
+			return highlighted_option
 	
 	def menu_right(self):
-		highlighted_option = self.highlighted_option_index
-		highlighted_option = highlighted_option + 1
-		if highlighted_option > (self.number_of_options-1):
-			highlighted_option = 0
-		self.highlighted_option_index = highlighted_option
-		return highlighted_option
+		if self.menu_mode == True:
+			highlighted_option = self.highlighted_option_index
+			highlighted_option = highlighted_option + 1
+			if highlighted_option > (self.number_of_options-1):
+				highlighted_option = 0
+			self.highlighted_option_index = highlighted_option
+			return highlighted_option
 	
 	def menu_load(self):
-		self.stop()
-		self.current_option_index = self.highlighted_option_index
-		self.load_player()
+		if self.menu_mode == True:
+			self.stop()
+			self.current_option_index = self.highlighted_option_index
+			self.load_player()
+			self.menu_mode = False
 
 	def play(self):
 		self.VLC.connect()
@@ -272,6 +285,7 @@ def stop_button(event):
 def menu_button(event):
 	global player
 	global display
+	player.set_menu_mode(True)
 	display.stop_playing_info()
 	display.update_display_line_one("Mode:")
 	display.update_display_line_two(player.current_option['name'])
