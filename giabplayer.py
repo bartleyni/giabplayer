@@ -91,6 +91,11 @@ class Player(object):
 		"""Returns the currently highlighted option."""
 		return self.highlighted_option_index
 	
+	@property
+	def get_current_sting(self):
+		"""Returns the current sting number."""
+		return self.last_sting+1
+		
 	def menu_left(self):
 		highlighted_option = self.highlighted_option_index
 		highlighted_option = highlighted_option - 1
@@ -249,7 +254,12 @@ def play_button(event):
 	if player.get_highlighted_option_index <> player.get_current_option_index:
 		player.menu_load()
 	player.play()
-	display.update_display_line_one(player.current_option['name'])
+	if player.current_option['type'] == "Sting":
+		sting = str(player.get_current_sting)
+		option_name = "Sting: "+sting
+		display.update_display_line_one(option_name)
+	else:
+		display.update_display_line_one(player.current_option['name'])
 	display_thread = threading.Thread(target=display.start_playing_info)
 	display_thread.start()
 	
