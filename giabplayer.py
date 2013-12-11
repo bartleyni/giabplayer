@@ -103,7 +103,7 @@ class Player(object):
 		return self.last_sting+1
 	
 	def set_menu_mode(self, mode=True):
-		self.menu_mode == mode
+		self.menu_mode = mode
 	
 	def menu_left(self):
 		if self.menu_mode == True:
@@ -336,6 +336,17 @@ if __name__ == "__main__":
 	LISTENER.register(6, pifacecad.IODIR_FALLING_EDGE, left_button)
 	LISTENER.register(7, pifacecad.IODIR_FALLING_EDGE, right_button)
 	LISTENER.activate()
+	
+	display.update_display_line_one("GIAB Micro")
+	display.update_display_line_two("Verison 3.0")
+	
+	time.sleep(2)
+	
+	display.update_display_line_one("Copyright 2013")
+	display.update_display_line_two("Nick Bartley")
+	
+	time.sleep(2)
+	
 	
 	display.update_display_line_one("Mode:")
 	playing_text = player.current_option['name']
