@@ -172,7 +172,6 @@ class Player(object):
 		self.VLC.disconnect()
 		return option_name
 	
-	
 class Display(object):
 	def __init__(self, CAD, VLC, LOCK):
 		
@@ -230,11 +229,14 @@ class Display(object):
 				title_text = playing_title.center(LCD_WIDTH-1)
 				self.update_display_line_two(title_text)
 			time.sleep(1)
-			
-			if player_state == "0":
-				player_status = "Stopped".center(LCD_WIDTH-1)
-			else:
-				player_status = "Playing".center(LCD_WIDTH-1)
+		
+		self.VLC.connect()
+		player_state = self.VLC.playing()
+		self.VLC.disconnect()
+		if player_state == "0":
+			player_status = "Stopped".center(LCD_WIDTH-1)
+		else:
+			player_status = "Playing".center(LCD_WIDTH-1)
 			self.update_display_line_two(player_status)
 		return
 		
@@ -282,6 +284,7 @@ def select_button(event):
 	display.stop_playing_info()
 	player.menu_load()
 	display.update_display_line_one(player.current_option['name'])
+	display.update_display_line_two(" ")
 
 if __name__ == "__main__":
 	
