@@ -269,6 +269,10 @@ def play_button(event):
 	player.play()
 	if player.current_option['type'] <> "Sting":
 		display.update_display_line_one(player.current_option['name'])
+	else:
+		sting = str(player.get_current_sting)
+		option_name = "Sting: "+sting
+		display.update_display_line_one(option_name)
 	display_thread = threading.Thread(target=display.start_playing_info)
 	display_thread.start()
 	
@@ -308,7 +312,12 @@ def select_button(event):
 	if player.get_menu_mode:
 		display.stop_playing_info()
 		player.menu_load()
-		display.update_display_line_one(player.current_option['name'])
+		if player.current_option['type'] <> "Sting":	
+			display.update_display_line_one(player.current_option['name'])
+		else:
+			sting = str(player.get_current_sting)
+			option_name = "Sting: "+sting
+			display.update_display_line_one(option_name)
 		display.update_display_line_two(" ")
 
 if __name__ == "__main__":
