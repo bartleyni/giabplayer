@@ -210,6 +210,7 @@ class Display(object):
 		self.display_info = True
 		playing_title = " "
 		player_status = " "
+		player_state = "0"
 		
 		while self.display_info:
 			self.VLC.connect()
@@ -229,6 +230,12 @@ class Display(object):
 				title_text = playing_title.center(LCD_WIDTH-1)
 				self.update_display_line_two(title_text)
 			time.sleep(1)
+			
+			if player_state == "0":
+				player_status = "Stopped".center(LCD_WIDTH-1)
+			else:
+				player_status = "Playing".center(LCD_WIDTH-1)
+			self.update_display_line_two(player_status)
 		return
 		
 	def stop_playing_info(self):
