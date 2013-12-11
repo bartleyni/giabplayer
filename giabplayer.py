@@ -241,8 +241,8 @@ class Display(object):
 		if player_state == "0":
 			player_status = "Stopped".center(LCD_WIDTH-1)
 		else:
-			player_status = "Playing".center(LCD_WIDTH-1)
-			self.update_display_line_two(player_status)
+			player_status = " "
+		self.update_display_line_two(player_status)
 		return
 		
 	def stop_playing_info(self):
@@ -254,11 +254,7 @@ def play_button(event):
 	if player.get_highlighted_option_index <> player.get_current_option_index:
 		player.menu_load()
 	player.play()
-	if player.current_option['type'] == "Sting":
-		sting = str(player.get_current_sting)
-		option_name = "Sting: "+sting
-		display.update_display_line_one(option_name)
-	else:
+	if player.current_option['type'] <> "Sting":
 		display.update_display_line_one(player.current_option['name'])
 	display_thread = threading.Thread(target=display.start_playing_info)
 	display_thread.start()
@@ -267,6 +263,10 @@ def stop_button(event):
 	global player
 	global display
 	player.stop()
+	if player.current_option['type'] == "Sting":
+		sting = str(player.get_current_sting)
+		option_name = "Sting: "+sting
+		display.update_display_line_one(option_name)
 	display.stop_playing_info()
 
 def menu_button(event):
