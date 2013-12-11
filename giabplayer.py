@@ -100,7 +100,7 @@ class Player(object):
 	@property
 	def get_current_sting(self):
 		"""Returns the current sting number."""
-		return self.last_sting+1
+		return self.last_sting
 	
 	def set_menu_mode(self, mode=True):
 		self.menu_mode = mode
@@ -124,11 +124,10 @@ class Player(object):
 			return highlighted_option
 	
 	def menu_load(self):
-		if self.menu_mode == True:
-			self.stop()
-			self.current_option_index = self.highlighted_option_index
-			self.load_player()
-			self.menu_mode = False
+		self.stop()
+		self.current_option_index = self.highlighted_option_index
+		self.load_player()
+		self.menu_mode = False
 
 	def play(self):
 		self.VLC.connect()
@@ -306,10 +305,11 @@ def right_button(event):
 def select_button(event):
 	global player
 	global display
-	display.stop_playing_info()
-	player.menu_load()
-	display.update_display_line_one(player.current_option['name'])
-	display.update_display_line_two(" ")
+	if player.get_menu_mode:
+		display.stop_playing_info()
+		player.menu_load()
+		display.update_display_line_one(player.current_option['name'])
+		display.update_display_line_two(" ")
 
 if __name__ == "__main__":
 	
