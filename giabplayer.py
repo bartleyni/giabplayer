@@ -86,7 +86,7 @@ def get_my_free_mem():
     total_mem = int(run_cmd(TOTAL_MEM_CMD))
     used_mem = int(run_cmd(USED_MEM_CMD))
     mem_perc = used_mem / total_mem
-    return "{:.1%}".format(mem_perc)
+    return "{:.2%}".format(mem_perc)
 
 def sys_info(cad):
 	cad.lcd.home()
@@ -358,9 +358,9 @@ def select_button(event):
 				display.update_display_line_one(option_name)
 			display.update_display_line_two(" ")
 		else:
-			if player.highlighted_option['name'] <> "Net Info":
+			if player.highlighted_option['name'] == "Net Info":
 				net_info()
-			if player.highlighted_option['name'] <> "Sys Info":
+			if player.highlighted_option['name'] == "Sys Info":
 				sys_info(display.CAD)
 
 if __name__ == "__main__":
