@@ -52,12 +52,6 @@ OPTIONS = [
 	'name': "Net Info", 
 	'source': None},
 	]
-	
-#Player Control Variables
-PlayerControl = None
-PlayerStatus = None
-player_source = None
-StatusFlag = False
 
 #General Control Variables
 LastSting = 0
@@ -65,20 +59,17 @@ SelectedMode = 0
 Internet = False
 
 def net_info():
-	net_ip = get_my_ip().split()
-	net_ip_length = len(net_ip)
+	ether_ip = "Disconnected"
+	wifi = "Disconnected"
+	ether_ip = get_my_ip("eth0")
+	wifi_ip = get_my_ip("wlan0")
 	
-	if net_ip_length > 0:
-		display.update_display_line_one("E: "+net_ip[0])
-	else:
-		display.update_display_line_one("E: Disconnected")
-	if net_ip_length > 1:
-		display.update_display_line_two("W: "+net_ip[1])
-	else:
-		display.update_display_line_two("W: Disconnected")
-	
-def get_my_ip():
-    return run_cmd("hostname --all-ip-addresses")[:-1]
+	display.update_display_line_one("E: "+ether_ip)
+	display.update_display_line_two("W: "+wifi_ip)
+
+def get_my_ip(interface):
+    return run_cmd("ifconfig "+interface+" | grep addr: | cut -d: -f2 | cut -d\" \" -f1
+")[:-1]
 	
 def run_cmd(cmd):
 	return subprocess.check_output(cmd, shell=True).decode('utf-8')
@@ -382,8 +373,7 @@ if __name__ == "__main__":
 	display.update_display_line_two("Nick Bartley")
 	
 	time.sleep(2)
-	
-	
+
 	display.update_display_line_one("Mode:")
 	playing_text = player.current_option['name']
 	display.update_display_line_two(playing_text)
