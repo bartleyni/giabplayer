@@ -65,9 +65,9 @@ SelectedMode = 0
 Internet = False
 
 def net_info():
-	net_ip = get_my_ip()
-	display.update_display_line_one(net_ip)
-	display.update_display_line_two(net_ip)
+	net_ip = get_my_ip().split()
+	display.update_display_line_one(net_ip[0])
+	display.update_display_line_two(net_ip[1])
 	
 def get_my_ip():
     return run_cmd("hostname --all-ip-addresses")[:-1]
