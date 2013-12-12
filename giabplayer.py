@@ -371,12 +371,10 @@ if __name__ == "__main__":
 	vlc = VLCClient("127.0.0.1",4212,"admin",1)
 	vlc_display = VLCClient("127.0.0.1",4212,"admin",1)
 	
-	temperature_symbol = pifacecad.LCDBitmap(
-    [0x4, 0x4, 0x4, 0x4, 0xe, 0xe, 0xe, 0x0])
-	memory_symbol = pifacecad.LCDBitmap(
-    [0xe, 0x1f, 0xe, 0x1f, 0xe, 0x1f, 0xe, 0x0])
+	temperature_symbol = pifacecad.LCDBitmap([0x4, 0x4, 0x4, 0x4, 0xe, 0xe, 0xe, 0x0])
+	memory_symbol = pifacecad.LCDBitmap([0xe, 0x1f, 0xe, 0x1f, 0xe, 0x1f, 0xe, 0x0])
 	cad.lcd.store_custom_bitmap(0, temperature_symbol)
-    cad.lcd.store_custom_bitmap(1, memory_symbol)
+	cad.lcd.store_custom_bitmap(1, memory_symbol)
 	
 	global display
 	global player
