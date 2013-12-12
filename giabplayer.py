@@ -61,6 +61,17 @@ LastSting = 0
 SelectedMode = 0
 Internet = False
 
+def net_info():
+	net_ip = get_my_ip()
+	display.update_display_line_one(net_ip)
+	display.update_display_line_two(net_ip)
+	
+def get_my_ip():
+    return run_cmd("hostname --all-ip-addresses")[:-1]
+	
+def run_cmd(cmd):
+	return subprocess.check_output(cmd, shell=True).decode('utf-8')
+
 class Player(object):
 	def __init__(self, CAD, VLC, initial_option=0):
 		
@@ -124,19 +135,21 @@ class Player(object):
 			return highlighted_option
 	
 	def menu_load(self):
-		self.stop()
+		self.current_option['type'] <> "Folder":
+			self.stop()
 		self.current_option_index = self.highlighted_option_index
 		self.load_player()
 		self.menu_mode = False
 
 	def play(self):
-		self.VLC.connect()
-		if self.current_option['type'] == "Folder":
-			self.VLC.randomon()
-			self.VLC.next()
-		self.VLC.play()
-		self.VLC.disconnect()
-	
+		if self.current_option['type'] <> "Info":
+			self.VLC.connect()
+			if self.current_option['type'] == "Folder":
+				self.VLC.randomon()
+				self.VLC.next()
+			self.VLC.play()
+			self.VLC.disconnect()
+		
 	def stop(self):
 		if self.current_option['type']  == "Sting":
 			self.load_player()
@@ -259,7 +272,7 @@ class Display(object):
 		
 	def stop_playing_info(self):
 		self.display_info = False
-		
+	
 def play_button(event):
 	global player
 	global display
@@ -310,15 +323,18 @@ def select_button(event):
 	global player
 	global display
 	if player.get_menu_mode:
-		display.stop_playing_info()
-		player.menu_load()
-		if player.current_option['type'] <> "Sting":	
-			display.update_display_line_one(player.current_option['name'])
+		if player.current_option['type'] <> "Info":	
+			display.stop_playing_info()
+			player.menu_load()
+			if player.current_option['type'] <> "Sting":	
+				display.update_display_line_one(player.current_option['name'])
+			else:
+				sting = str(player.get_current_sting)
+				option_name = "Sting: "+sting
+				display.update_display_line_one(option_name)
+			display.update_display_line_two(" ")
 		else:
-			sting = str(player.get_current_sting)
-			option_name = "Sting: "+sting
-			display.update_display_line_one(option_name)
-		display.update_display_line_two(" ")
+			net_info()
 
 if __name__ == "__main__":
 	
