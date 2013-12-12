@@ -47,7 +47,10 @@ OPTIONS = [
 	'source': "giabplayer/Help.mp3"},
 	{'type': "Folder", 
 	'name': "USB Stick", 
-	'source':"/media/usb/"},
+	'source': "/media/usb/"},
+	{'type': "Info", 
+	'name': "Net Info", 
+	'source': None},
 	]
 	
 #Player Control Variables
