@@ -326,7 +326,7 @@ def select_button(event):
 	global player
 	global display
 	if player.get_menu_mode:
-		if player.current_option['type'] <> "Info":	
+		if player.highlighted_option['type'] <> "Info":	
 			display.stop_playing_info()
 			player.menu_load()
 			if player.current_option['type'] <> "Sting":	
