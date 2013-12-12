@@ -82,7 +82,6 @@ def run_cmd(cmd):
 def get_my_temp():
     return run_cmd(GET_TEMP_CMD)[5:9]
 
-
 def get_my_free_mem():
     total_mem = int(run_cmd(TOTAL_MEM_CMD))
     used_mem = int(run_cmd(USED_MEM_CMD))
@@ -90,12 +89,12 @@ def get_my_free_mem():
     return "{:.1%}".format(mem_perc)
 
 def sys_info(cad):
-		cad.lcd.home()
-		cad.lcd.write_custom_bitmap(0)
-	    cad.lcd.write(":{}C ".format(get_my_temp()))
+	cad.lcd.home()
+	cad.lcd.write_custom_bitmap(0)
+	cad.lcd.write(":{}C ".format(get_my_temp()))
 
-        cad.lcd.write_custom_bitmap(1)
-        cad.lcd.write(":{}".format(get_my_free_mem()))
+	cad.lcd.write_custom_bitmap(1)
+	cad.lcd.write(":{}".format(get_my_free_mem()))
 		
 class Player(object):
 	def __init__(self, CAD, VLC, initial_option=0):
