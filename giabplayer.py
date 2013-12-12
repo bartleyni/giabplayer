@@ -65,15 +65,14 @@ SelectedMode = 0
 Internet = False
 
 def net_info():
-	net_ip[0] = None
-	net_ip[1] = None
 	net_ip = get_my_ip().split()
+	net_ip_length = len(net_ip)
 	
-	if net_ip[0]:
+	if net_ip_length > 0:
 		display.update_display_line_one("E: "+net_ip[0])
 	else:
 		display.update_display_line_one("E: Disconnected")
-	if net_ip[1]:
+	if net_ip_length > 1:
 		display.update_display_line_two("W: "+net_ip[1])
 	else:
 		display.update_display_line_two("W: Disconnected")
