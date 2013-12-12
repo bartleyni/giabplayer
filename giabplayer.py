@@ -51,12 +51,18 @@ OPTIONS = [
 	{'type': "Info", 
 	'name': "Net Info", 
 	'source': None},
+	{'type': "Info", 
+	'name': "Sys Info", 
+	'source': None},
 	]
 
 #General Control Variables
 LastSting = 0
 SelectedMode = 0
 Internet = False
+GET_TEMP_CMD = "/opt/vc/bin/vcgencmd measure_temp"
+TOTAL_MEM_CMD = "free | grep 'Mem' | awk '{print $2}'"
+USED_MEM_CMD = "free | grep '\-\/+' | awk '{print $3}'"
 
 def net_info():
 	ether_ip = "Disconnected"
@@ -73,6 +79,24 @@ def get_my_ip(interface):
 def run_cmd(cmd):
 	return subprocess.check_output(cmd, shell=True).decode('utf-8')
 
+def get_my_temp():
+    return run_cmd(GET_TEMP_CMD)[5:9]
+
+
+def get_my_free_mem():
+    total_mem = int(run_cmd(TOTAL_MEM_CMD))
+    used_mem = int(run_cmd(USED_MEM_CMD))
+    mem_perc = used_mem / total_mem
+    return "{:.1%}".format(mem_perc)
+
+def sys_info(cad):
+		cad.lcd.home()
+		cad.lcd.write_custom_bitmap(0)
+	    cad.lcd.write(":{}C ".format(get_my_temp()))
+
+        cad.lcd.write_custom_bitmap(1)
+        cad.lcd.write(":{}".format(get_my_free_mem()))
+		
 class Player(object):
 	def __init__(self, CAD, VLC, initial_option=0):
 		
@@ -335,7 +359,10 @@ def select_button(event):
 				display.update_display_line_one(option_name)
 			display.update_display_line_two(" ")
 		else:
-			net_info()
+			if player.highlighted_option['name'] <> "Net Info":
+				net_info()
+			if player.highlighted_option['name'] <> "Sys Info":
+				sys_info(display.CAD)
 
 if __name__ == "__main__":
 	
@@ -344,6 +371,13 @@ if __name__ == "__main__":
 	display_lock = threading.Lock()
 	vlc = VLCClient("127.0.0.1",4212,"admin",1)
 	vlc_display = VLCClient("127.0.0.1",4212,"admin",1)
+	
+	temperature_symbol = pifacecad.LCDBitmap(
+    [0x4, 0x4, 0x4, 0x4, 0xe, 0xe, 0xe, 0x0])
+	memory_symbol = pifacecad.LCDBitmap(
+    [0xe, 0x1f, 0xe, 0x1f, 0xe, 0x1f, 0xe, 0x0])
+	cad.lcd.store_custom_bitmap(0, temperature_symbol)
+    cad.lcd.store_custom_bitmap(1, memory_symbol)
 	
 	global display
 	global player
