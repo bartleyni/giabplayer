@@ -68,8 +68,7 @@ def net_info():
 	display.update_display_line_two("W: "+wifi_ip)
 
 def get_my_ip(interface):
-    return run_cmd("ifconfig "+interface+" | grep addr: | cut -d: -f2 | cut -d\" \" -f1
-")[:-1]
+    return run_cmd("ifconfig "+interface+" | grep addr: | cut -d: -f2 | cut -d\" \" -f1")[:-1]
 	
 def run_cmd(cmd):
 	return subprocess.check_output(cmd, shell=True).decode('utf-8')
