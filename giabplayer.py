@@ -65,7 +65,10 @@ SelectedMode = 0
 Internet = False
 
 def net_info():
+	net_ip[0] = None
+	net_ip[1] = None
 	net_ip = get_my_ip().split()
+	
 	if net_ip[0]:
 		display.update_display_line_one("E: "+net_ip[0])
 	else:
