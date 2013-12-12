@@ -135,7 +135,7 @@ class Player(object):
 			return highlighted_option
 	
 	def menu_load(self):
-		self.current_option['type'] <> "Folder":
+		if self.current_option['type'] <> "Folder":
 			self.stop()
 		self.current_option_index = self.highlighted_option_index
 		self.load_player()
