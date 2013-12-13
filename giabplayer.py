@@ -341,12 +341,14 @@ def left_button(event):
 	global player
 	global display
 	player.menu_left()
+	display.update_display_line_one("Mode:")
 	display.update_display_line_two(player.highlighted_option['name'])
 	
 def right_button(event):
 	global player
 	global display
 	player.menu_right()
+	display.update_display_line_one("Mode:")
 	display.update_display_line_two(player.highlighted_option['name'])
 
 def select_button(event):
