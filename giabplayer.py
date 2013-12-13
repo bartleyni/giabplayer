@@ -93,14 +93,6 @@ def get_my_free_mem():
 	#mem_perc = 0.5
 	return "{:.1%}".format(mem_perc)
 
-def sys_info(cad):
-	cad.lcd.home()
-	cad.lcd.write_custom_bitmap(0)
-	cad.lcd.write(":{}C ".format(get_my_temp()))
-
-	cad.lcd.write_custom_bitmap(1)
-	cad.lcd.write(":{}".format(get_my_free_mem()))
-
 def shutdown():
 	run_cmd(SHUTDOWN_CMD)
 
@@ -308,6 +300,16 @@ class Display(object):
 	def stop_playing_info(self):
 		self.display_info = False
 	
+	def sys_info(self):
+		self.LOCK.acquire()
+		self.CAD.lcd.home()
+		self.CAD.lcd.write_custom_bitmap(0)
+		self.CAD.lcd.write(":{}C ".format(get_my_temp()))
+
+		self.CAD.lcd.write_custom_bitmap(1)
+		self.CAD.lcd.write(":{}".format(get_my_free_mem()))
+		self.LOCK.release()
+		
 def play_button(event):
 	global player
 	global display
@@ -378,7 +380,7 @@ def select_button(event):
 			if player.highlighted_option['name'] == "Net Info":
 				net_info()
 			if player.highlighted_option['name'] == "Sys Info":
-				sys_info(display.CAD)
+				display.sys_info()
 
 def shutdown_button(event):
 	shutdown()
