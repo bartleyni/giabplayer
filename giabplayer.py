@@ -87,8 +87,8 @@ def get_my_free_mem():
     #used_mem = int(run_cmd(USED_MEM_CMD))
 	total_mem = 100
 	used_mem = 50
-	mem_perc = used_mem / total_mem
-	mem_perc = 50
+	mem_perc = float(used_mem) / total_mem
+	#mem_perc = 0.5
 	return "{:.1%}".format(mem_perc)
 
 def sys_info(cad):
