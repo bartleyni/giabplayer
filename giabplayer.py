@@ -358,7 +358,8 @@ def select_button(event):
 			if player.highlighted_option['name'] <> player.current_option['name']:
 				player.menu_load()
 			else:
-				display.start_playing_info()
+				display_thread = threading.Thread(target=display.start_playing_info)
+				display_thread.start()
 			if player.current_option['type'] <> "Sting":	
 				display.update_display_line_one(player.current_option['name'])
 			else:
