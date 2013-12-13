@@ -355,7 +355,10 @@ def select_button(event):
 	if player.get_menu_mode:
 		if player.highlighted_option['type'] <> "Info":	
 			display.stop_playing_info()
-			player.menu_load()
+			if player.highlighted_option['name'] <> player.current_option['name']:
+				player.menu_load()
+			else:
+				display.start_playing_info()
 			if player.current_option['type'] <> "Sting":	
 				display.update_display_line_one(player.current_option['name'])
 			else:
