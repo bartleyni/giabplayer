@@ -335,7 +335,7 @@ def menu_button(event):
 	player.set_menu_mode(True)
 	display.stop_playing_info()
 	display.update_display_line_one("Mode:")
-	display.update_display_line_two(player.current_option['name'])
+	display.update_display_line_two(player.highlighted_option['name'])
 	
 def left_button(event):
 	global player
