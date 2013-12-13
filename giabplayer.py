@@ -98,7 +98,7 @@ def sys_info(cad):
 	cad.lcd.write_custom_bitmap(1)
 	cad.lcd.write(":{}".format(get_my_free_mem()))
 
-def shutdown():
+#def shutdown():
 
 			
 class Player(object):
