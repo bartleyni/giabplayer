@@ -63,6 +63,8 @@ Internet = False
 GET_TEMP_CMD = "/opt/vc/bin/vcgencmd measure_temp"
 TOTAL_MEM_CMD = "free | grep 'Mem' | awk '{print $2}'"
 USED_MEM_CMD = "free | grep '\-\/+' | awk '{print $3}'"
+SHUTDOWN_CMD = "sudo shutdown now"
+REBOOT_CMD = "sudo shutdown -r now"
 
 def net_info():
 	ether_ip = "Disconnected"
@@ -99,8 +101,11 @@ def sys_info(cad):
 	cad.lcd.write_custom_bitmap(1)
 	cad.lcd.write(":{}".format(get_my_free_mem()))
 
-#def shutdown():
+def shutdown():
+	run_cmd(SHUTDOWN_CMD)
 
+def reboot():
+	run_cmd(REBOOT_CMD)
 			
 class Player(object):
 	def __init__(self, CAD, VLC, initial_option=0):
@@ -375,6 +380,12 @@ def select_button(event):
 			if player.highlighted_option['name'] == "Sys Info":
 				sys_info(display.CAD)
 
+def shutdown_button(event):
+	shutdown()
+	
+def reboot_button(event):
+	reboot()
+	
 if __name__ == "__main__":
 	
 	PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "150", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}"])
@@ -398,8 +409,8 @@ if __name__ == "__main__":
 	
 	LISTENER.register(0, pifacecad.IODIR_FALLING_EDGE, play_button)
 	LISTENER.register(1, pifacecad.IODIR_FALLING_EDGE, stop_button)
-	#LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, shutdown_button)
-	#LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, reboot_button)
+	LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, shutdown_button)
+	LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, reboot_button)
 	LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, menu_button)
 	LISTENER.register(5, pifacecad.IODIR_FALLING_EDGE, select_button)
 	LISTENER.register(6, pifacecad.IODIR_FALLING_EDGE, left_button)
