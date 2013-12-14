@@ -57,9 +57,6 @@ OPTIONS = [
 	]
 
 #General Control Variables
-LastSting = 0
-SelectedMode = 0
-Internet = False
 GET_TEMP_CMD = "/opt/vc/bin/vcgencmd measure_temp"
 TOTAL_MEM_CMD = "free | grep 'Mem' | awk '{print $2}'"
 USED_MEM_CMD = "free | grep '\-\/+' | awk '{print $3}'"
@@ -271,21 +268,22 @@ class Display(object):
 		while self.display_info:
 			self.VLC.connect()
 			player_state = self.VLC.playing()
+			playing_title = self.VLC.title()
+			self.VLC.disconnect()
 		
 			if player_state == "0":
 				player_status = "Stopped".center(LCD_WIDTH-1)
 			else:
 				player_status = "Playing".center(LCD_WIDTH-1)
-				
-			playing_title = self.VLC.title()
-			self.VLC.disconnect()
+
 			time.sleep(0.5)
 			self.update_display_line_two(player_status)
 			time.sleep(1.0)
+			
 			if player_state <> "0":
 				title_text = playing_title.center(LCD_WIDTH-1)
 				self.update_display_line_two(title_text)
-			time.sleep(1)
+			time.sleep(1.0)
 		
 		self.VLC.connect()
 		player_state = self.VLC.playing()
@@ -339,6 +337,9 @@ def stop_button(event):
 def menu_button(event):
 	global player
 	global display
+	global shutdown_one_press
+	
+	shutdown_one_press = False
 	player.set_menu_mode(True)
 	display.stop_playing_info()
 	display.update_display_line_one("Mode:")
@@ -383,7 +384,16 @@ def select_button(event):
 				display.sys_info()
 
 def shutdown_button(event):
-	shutdown()
+	global display
+	global shutdown_one_press
+	if shutdwon_one_press == False:
+		display.stop_playing_info()
+		display.update_display_line_one("Shutdown?")
+		display.update_display_line_two("Press again...")
+		shutdown_one_press = True
+	else:
+		display.update_display_line_two("OK")
+		shutdown()
 	
 def reboot_button(event):
 	reboot()
@@ -403,7 +413,9 @@ if __name__ == "__main__":
 	
 	global display
 	global player
+	global shutdown_one_press
 	
+	shutdown_one_press = False	
 	player = Player(cad, vlc)
 	display = Display(cad, vlc_display, display_lock)
 	
