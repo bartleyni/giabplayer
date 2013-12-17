@@ -69,8 +69,8 @@ def net_info():
 	ether_ip = get_my_ip("eth0")
 	wifi_ip = get_my_ip("wlan0")
 	
-	display.update_display_line_one("E: "+ether_ip)
-	display.update_display_line_two("W: "+wifi_ip)
+	display.update_display_line_one("E"+ether_ip)
+	display.update_display_line_two("W"+wifi_ip)
 
 def get_my_ip(interface):
     return run_cmd("ifconfig "+interface+" | grep addr: | cut -d: -f2 | cut -d\" \" -f1")[:-1]
