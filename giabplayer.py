@@ -265,7 +265,7 @@ class Display(object):
 		player_status = " "
 		player_state = "0"
 		
-		while self.display_info:
+		while self.display_info and (self.menu_mode == False):
 			self.VLC.connect()
 			player_state = self.VLC.playing()
 			playing_title = self.VLC.title()
