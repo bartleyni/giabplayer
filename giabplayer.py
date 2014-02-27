@@ -403,6 +403,7 @@ if __name__ == "__main__":
 	global player
 	
 	player = Player(cad, vlc)
+	player.set_menu_mode(True)
 	display = Display(cad, vlc_display, display_lock)
 	
 	LISTENER = pifacecad.SwitchEventListener(chip=cad)
