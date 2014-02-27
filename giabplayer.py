@@ -265,7 +265,7 @@ class Display(object):
 		player_status = " "
 		player_state = "0"
 		
-		while self.display_info and (self.menu_mode == False):
+		while self.display_info:
 			self.VLC.connect()
 			player_state = self.VLC.playing()
 			playing_title = self.VLC.title()
@@ -361,6 +361,7 @@ def right_button(event):
 def select_button(event):
 	global player
 	global display
+	display.stop_playing_info()
 	if player.get_menu_mode:
 		if player.highlighted_option['type'] <> "Info":	
 			display.stop_playing_info()
