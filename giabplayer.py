@@ -401,9 +401,7 @@ if __name__ == "__main__":
 	
 	global display
 	global player
-	global shutdown_one_press
 	
-	shutdown_one_press = False	
 	player = Player(cad, vlc)
 	display = Display(cad, vlc_display, display_lock)
 	
@@ -411,7 +409,7 @@ if __name__ == "__main__":
 	
 	LISTENER.register(0, pifacecad.IODIR_FALLING_EDGE, play_button)
 	LISTENER.register(1, pifacecad.IODIR_FALLING_EDGE, stop_button)
-	LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, left_button))
+	LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, left_button)
 	LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, right_button)
 	LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, menu_button)
 	LISTENER.register(5, pifacecad.IODIR_FALLING_EDGE, select_button)
