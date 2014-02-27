@@ -312,6 +312,7 @@ def play_button(event):
 	global player
 	global display
 	player.set_menu_mode(False)
+	player.menu_mode = False
 	if player.get_highlighted_option_index <> player.get_current_option_index:
 		player.menu_load()
 	player.play()
