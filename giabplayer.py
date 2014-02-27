@@ -360,7 +360,7 @@ def right_button(event):
 def select_button(event):
 	global player
 	global display
-	if player.get_menu_mode == False:
+	if player.get_menu_mode:
 		if player.highlighted_option['type'] <> "Info":	
 			display.stop_playing_info()
 			if player.highlighted_option['name'] <> player.current_option['name']:
@@ -412,10 +412,7 @@ if __name__ == "__main__":
 	LISTENER.register(1, pifacecad.IODIR_FALLING_EDGE, stop_button)
 	LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, left_button)
 	LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, right_button)
-	LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, menu_button)
-	LISTENER.register(5, pifacecad.IODIR_FALLING_EDGE, select_button)
-	LISTENER.register(6, pifacecad.IODIR_FALLING_EDGE, left_button)
-	LISTENER.register(7, pifacecad.IODIR_FALLING_EDGE, right_button)
+	LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, select_button)
 	LISTENER.activate()
 	
 	display.update_display_line_one("GIAB Micro")
