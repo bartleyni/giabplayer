@@ -337,9 +337,7 @@ def stop_button(event):
 def menu_button(event):
 	global player
 	global display
-	global shutdown_one_press
 	
-	shutdown_one_press = False
 	player.set_menu_mode(True)
 	display.stop_playing_info()
 	display.update_display_line_one("Mode:")
@@ -382,22 +380,12 @@ def select_button(event):
 				net_info()
 			if player.highlighted_option['name'] == "Sys Info":
 				display.sys_info()
-
-def shutdown_button(event):
-	global display
-	global shutdown_one_press
-	if shutdwon_one_press == False:
-		display.stop_playing_info()
-		display.update_display_line_one("Shutdown?")
-		display.update_display_line_two("Press again...")
-		shutdown_one_press = True
 	else:
-		display.update_display_line_two("OK")
-		shutdown()
-	
-def reboot_button(event):
-	reboot()
-	
+		player.set_menu_mode(True)
+		display.stop_playing_info()
+		display.update_display_line_one("Mode:")
+		display.update_display_line_two(player.highlighted_option['name'])
+		
 if __name__ == "__main__":
 	
 	PLAYER_PROCESS = subprocess.Popen(["/usr/bin/vlc", "-I", "dummy", "--volume", "150", "--intf", "telnet", "--lua-config", "telnet={host='0.0.0.0:4212'}"])
@@ -423,8 +411,8 @@ if __name__ == "__main__":
 	
 	LISTENER.register(0, pifacecad.IODIR_FALLING_EDGE, play_button)
 	LISTENER.register(1, pifacecad.IODIR_FALLING_EDGE, stop_button)
-	LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, shutdown_button)
-	LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, reboot_button)
+	LISTENER.register(2, pifacecad.IODIR_FALLING_EDGE, left_button))
+	LISTENER.register(3, pifacecad.IODIR_FALLING_EDGE, right_button)
 	LISTENER.register(4, pifacecad.IODIR_FALLING_EDGE, menu_button)
 	LISTENER.register(5, pifacecad.IODIR_FALLING_EDGE, select_button)
 	LISTENER.register(6, pifacecad.IODIR_FALLING_EDGE, left_button)
