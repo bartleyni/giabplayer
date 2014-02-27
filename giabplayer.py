@@ -360,7 +360,7 @@ def right_button(event):
 def select_button(event):
 	global player
 	global display
-	if player.get_menu_mode:
+	if player.get_menu_mode == False:
 		if player.highlighted_option['type'] <> "Info":	
 			display.stop_playing_info()
 			if player.highlighted_option['name'] <> player.current_option['name']:
