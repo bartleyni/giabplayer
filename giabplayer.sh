@@ -1,3 +1,3 @@
 #!/bin/sh
 sleep 10
-sudo python giabplayer/giabplayer.py &
+sudo python /home/pi/giabplayer/giabplayer.py &
